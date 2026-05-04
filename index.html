@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FaceOrbit – 人物多角度AI生成平台</title>
+  <link rel="icon" type="image/x-icon" href="./PolyView_icon.ico">
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    /* 单图上传样式 */
+    .single-upload-area {
+      margin-top: 16px;
+    }
+    .upload-preview {
+      margin-top: 10px;
+      min-height: 200px;
+      background: #f6f2ea;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+    .upload-preview img {
+      max-width: 100%;
+      max-height: 200px;
+      object-fit: contain;
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="brand">
+        <img class="brand-logo" src="./FaceOrbit_logo.png" alt="FaceOrbit Logo">
+        <div class="brand-copy">
+          <p class="eyebrow">PolyView V2</p>
+          <h1>人物多角度AI生成平</h1>
+          <p class="lede">上传一张参考图，系统将利用它生成高质量多视角图像。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel grid">
+      <div class="card">
+        <label for="mode">模式预设</label>
+        <select id="mode"></select>
+
+        <!-- 单图上传区 -->
+        <div class="single-upload-area">
+          <label for="imageUpload">上传参考图</label>
+          <input type="file" id="imageUpload" accept="image/*">
+          <div id="uploadPreview" class="upload-preview"></div>
+          <div id="uploadEmpty" class="empty-state">尚未选择图像</div>
+        </div>
+        <p class="hint">请上传一张清晰、背景简洁的正面参考图。</p>
+
+        <div class="action-row">
+          <button id="generateButton" type="button">完整生成（全部视角）</button>
+          <button id="resetViews" type="button" class="ghost">恢复预设</button>
+        </div>
+        <p class="hint" style="margin-top: 8px; color: #6a756f;">💡 提示：如需单独调整某个视角，请在下方的「多视图控制」区域使用各自的「单独生成」按钮。</p>
+
+        <div id="statusBox" class="status-box status-idle">等待任务</div>
+      </div>
+
+      <div class="card">
+        <div class="section-head">
+          <h2>正向 Prompt</h2>
+          <span id="modeBadge" class="badge">Celadon</span>
+        </div>
+        <textarea id="promptText" rows="8"></textarea>
+
+        <div class="section-head">
+          <h2>负向 Prompt</h2>
+          <div>
+            <button id="copyPrompt" type="button" class="mini-button">复制正向词</button>
+            <button id="copyNegative" type="button" class="mini-button" style="margin-left: 8px;">复制负向词</button>
+          </div>
+        </div>
+        <textarea id="negativePromptText" rows="6"></textarea>
+
+        <div class="section-head">
+          <h2>提交参数预览</h2>
+        </div>
+        <pre id="payloadPreview"></pre>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="card">
+        <div class="section-head">
+          <div>
+            <h2 id="viewControlTitle">多视图控制</h2>
+            <p id="viewControlSubhead" class="subhead">选择模式后，下方将显示对应的视角列表，每个视角可单独生成。</p>
+          </div>
+          <button id="refreshGallery" type="button" class="mini-button">刷新结果</button>
+        </div>
+        <div id="viewControls" class="view-controls"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="card">
+        <div class="section-head">
+          <h2>生成结果</h2>
+        </div>
+
+        <div class="result-grid">
+          <div class="result-block">
+            <h3>总图（拼贴）</h3>
+            <img id="totalPreview" alt="总图预览">
+            <div id="totalEmpty" class="empty-state">尚未生成总图</div>
+          </div>
+
+          <div class="result-block">
+            <h3>Contact Sheet</h3>
+            <img id="sheetPreview" alt="Contact Sheet 预览">
+            <div id="sheetEmpty" class="empty-state">尚未生成 Contact Sheet</div>
+          </div>
+        </div>
+
+        <div class="section-head section-head-tight">
+          <h2>单角度图片</h2>
+          <p class="subhead">按视角分区显示，单独生成或完整生成的结果会出现在对应视角区域</p>
+        </div>
+        <div id="singleGallery" class="single-gallery"></div>
+        <div id="singleEmpty" class="empty-state">尚未生成单角度图片</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="card">
+        <div class="section-head">
+          <h2>输出目录</h2>
+        </div>
+        <ul class="paths">
+          <li><strong>项目输入</strong> <code>D:\PixelSmile\PolyViewV2\input</code></li>
+          <li><strong>总图输出</strong> <code>D:\PixelSmile\PolyViewV2\output\total</code></li>
+          <li><strong>单图输出</strong> <code>D:\PixelSmile\PolyViewV2\output\single</code></li>
+          <li><strong>拼接图输出</strong> <code>D:\PixelSmile\PolyViewV2\output\contact_sheets</code></li>
+          <li><strong>日志输出</strong> <code>D:\PixelSmile\PolyViewV2\logs</code></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>

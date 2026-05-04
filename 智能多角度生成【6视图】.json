@@ -1,0 +1,469 @@
+{
+  "1": {
+    "inputs": {
+      "filename_prefix": "ComfyUI_View01",
+      "images": ["24_front_vae", 0]
+    },
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存-视图1"}
+  },
+  "2": {
+    "inputs": {
+      "filename_prefix": "ComfyUI_View02",
+      "images": ["34_back_vae", 0]
+    },
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存-视图2"}
+  },
+  "3": {
+    "inputs": {
+      "filename_prefix": "ComfyUI_View03",
+      "images": ["44_top_vae", 0]
+    },
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存-视图3"}
+  },
+  "4": {
+    "inputs": {
+      "filename_prefix": "ComfyUI_View04",
+      "images": ["54_threequarter_vae", 0]
+    },
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存-视图4"}
+  },
+  "5": {
+    "inputs": {
+      "filename_prefix": "ComfyUI_View05",
+      "images": ["64_side_vae", 0]
+    },
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存-视图5"}
+  },
+  "6": {
+    "inputs": {
+      "filename_prefix": "ComfyUI_View06",
+      "images": ["74_additional_vae", 0]
+    },
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存-视图6"}
+  },
+  "8_vae": {
+    "inputs": {"vae_name": "qwen_image_vae.safetensors"},
+    "class_type": "VAELoader",
+    "_meta": {"title": "VAE加载器"}
+  },
+  "9_unet": {
+    "inputs": {
+      "unet_name": "Qwen-Image-Edit-2511-FP8_e4m3fn.safetensors",
+      "weight_dtype": "fp8_e4m3fn"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {"title": "UNET加载器"}
+  },
+  "12_clip": {
+    "inputs": {
+      "clip_name": "qwen_2.5_vl_7b_fp8_scaled.safetensors",
+      "type": "qwen_image",
+      "device": "default"
+    },
+    "class_type": "CLIPLoader",
+    "_meta": {"title": "CLIP加载器"}
+  },
+  "6_load": {
+    "inputs": {"image": "reference.png"},
+    "class_type": "LoadImage",
+    "_meta": {"title": "加载参考图"}
+  },
+  "10_lora1": {
+    "inputs": {
+      "lora_name": "Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors",
+      "strength_model": 1,
+      "model": ["9_unet", 0]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {"title": "LoRA加载器1"}
+  },
+  "11_lora2": {
+    "inputs": {
+      "lora_name": "qwen-image-edit-2511-multiple-angles-lora.safetensors",
+      "strength_model": 0.85,
+      "model": ["10_lora1", 0]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {"title": "LoRA加载器2"}
+  },
+  "100_instantid_loader": {
+    "inputs": {
+      "instantid_file": "ip-adapter.bin"
+    },
+    "class_type": "InstantIDModelLoader",
+    "_meta": {"title": "InstantID模型加载器"}
+  },
+  "101_face_analysis": {
+    "inputs": {
+      "providers": "CPU"
+    },
+    "class_type": "InstantIDFaceAnalysis",
+    "_meta": {"title": "InstantID人脸分析"}
+  },
+  "102_apply_instantid_front": {
+    "inputs": {
+      "model": ["11_lora2", 0],
+      "instantid": ["100_instantid_loader", 0],
+      "faceanalysis": ["101_face_analysis", 0],
+      "image": ["6_load", 0],
+      "weight": 0.65,
+      "start_at": 0.0,
+      "end_at": 0.75,
+      "noise": 0.35
+    },
+    "class_type": "ApplyInstantID",
+    "_meta": {"title": "视图1-InstantID应用"}
+  },
+  "103_apply_instantid_back": {
+    "inputs": {
+      "model": ["102_apply_instantid_front", 0],
+      "instantid": ["100_instantid_loader", 0],
+      "faceanalysis": ["101_face_analysis", 0],
+      "image": ["6_load", 0],
+      "weight": 0.65,
+      "start_at": 0.0,
+      "end_at": 0.75,
+      "noise": 0.35
+    },
+    "class_type": "ApplyInstantID",
+    "_meta": {"title": "视图2-InstantID应用"}
+  },
+  "104_apply_instantid_top": {
+    "inputs": {
+      "model": ["103_apply_instantid_back", 0],
+      "instantid": ["100_instantid_loader", 0],
+      "faceanalysis": ["101_face_analysis", 0],
+      "image": ["6_load", 0],
+      "weight": 0.65,
+      "start_at": 0.0,
+      "end_at": 0.75,
+      "noise": 0.35
+    },
+    "class_type": "ApplyInstantID",
+    "_meta": {"title": "视图3-InstantID应用"}
+  },
+  "105_apply_instantid_threequarter": {
+    "inputs": {
+      "model": ["104_apply_instantid_top", 0],
+      "instantid": ["100_instantid_loader", 0],
+      "faceanalysis": ["101_face_analysis", 0],
+      "image": ["6_load", 0],
+      "weight": 0.65,
+      "start_at": 0.0,
+      "end_at": 0.75,
+      "noise": 0.35
+    },
+    "class_type": "ApplyInstantID",
+    "_meta": {"title": "视图4-InstantID应用"}
+  },
+  "106_apply_instantid_side": {
+    "inputs": {
+      "model": ["105_apply_instantid_threequarter", 0],
+      "instantid": ["100_instantid_loader", 0],
+      "faceanalysis": ["101_face_analysis", 0],
+      "image": ["6_load", 0],
+      "weight": 0.65,
+      "start_at": 0.0,
+      "end_at": 0.75,
+      "noise": 0.35
+    },
+    "class_type": "ApplyInstantID",
+    "_meta": {"title": "视图5-InstantID应用"}
+  },
+  "107_apply_instantid_additional": {
+    "inputs": {
+      "model": ["106_apply_instantid_side", 0],
+      "instantid": ["100_instantid_loader", 0],
+      "faceanalysis": ["101_face_analysis", 0],
+      "image": ["6_load", 0],
+      "weight": 0.65,
+      "start_at": 0.0,
+      "end_at": 0.75,
+      "noise": 0.35
+    },
+    "class_type": "ApplyInstantID",
+    "_meta": {"title": "视图6-InstantID应用"}
+  },
+  "22_front_latent": {
+    "inputs": {"width": 1024, "height": 1024, "batch_size": 1},
+    "class_type": "EmptyLatentImage",
+    "_meta": {"title": "视图1-空Latent"}
+  },
+  "32_back_latent": {
+    "inputs": {"width": 1024, "height": 1024, "batch_size": 1},
+    "class_type": "EmptyLatentImage",
+    "_meta": {"title": "视图2-空Latent"}
+  },
+  "42_top_latent": {
+    "inputs": {"width": 1024, "height": 1024, "batch_size": 1},
+    "class_type": "EmptyLatentImage",
+    "_meta": {"title": "视图3-空Latent"}
+  },
+  "52_threequarter_latent": {
+    "inputs": {"width": 1024, "height": 1024, "batch_size": 1},
+    "class_type": "EmptyLatentImage",
+    "_meta": {"title": "视图4-空Latent"}
+  },
+  "62_side_latent": {
+    "inputs": {"width": 1024, "height": 1024, "batch_size": 1},
+    "class_type": "EmptyLatentImage",
+    "_meta": {"title": "视图5-空Latent"}
+  },
+  "72_additional_latent": {
+    "inputs": {"width": 1024, "height": 1024, "batch_size": 1},
+    "class_type": "EmptyLatentImage",
+    "_meta": {"title": "视图6-空Latent"}
+  },
+  "20_front_encoder": {
+    "inputs": {
+      "prompt": "A front view of the same person shown in the reference image. Keep the exact same face identity, facial features, eye shape, nose shape, lip shape, jawline, skin texture, and hair style. Natural expression, symmetrical face, realistic skin. Professional portrait photography, clean white background, soft even lighting, 4K, high resolution.",
+      "target_size": 1024,
+      "target_vl_size": 384,
+      "upscale_method": "lanczos",
+      "crop_method": "center",
+      "instruction": "Describe the key features of the input image (face shape, eyes, nose, lips, skin tone, hair style), then generate a new image that maintains EXACTLY the same facial identity. The background MUST be pure white. Do not change any facial features.",
+      "clip": ["12_clip", 0],
+      "vae": ["8_vae", 0],
+      "vl_resize_image1": ["6_load", 0]
+    },
+    "class_type": "TextEncodeQwenImageEditPlusAdvance_lrzjason",
+    "_meta": {"title": "视图1-编码"}
+  },
+  "30_back_encoder": {
+    "inputs": {
+      "prompt": "A back view of the same person shown in the reference image. Keep the exact same hair style, hair color, body shape, shoulder width, and clothing. The face is not visible from this angle. Professional portrait photography, clean white background, soft even lighting, 4K, high resolution.",
+      "target_size": 1024,
+      "target_vl_size": 384,
+      "upscale_method": "lanczos",
+      "crop_method": "center",
+      "instruction": "Describe the key features of the input image (hair style, body shape, clothing), then generate a back view maintaining consistent body proportions. The background MUST be pure white.",
+      "clip": ["12_clip", 0],
+      "vae": ["8_vae", 0],
+      "vl_resize_image1": ["6_load", 0]
+    },
+    "class_type": "TextEncodeQwenImageEditPlusAdvance_lrzjason",
+    "_meta": {"title": "视图2-编码"}
+  },
+  "40_top_encoder": {
+    "inputs": {
+      "prompt": "A top-down view of the same person shown in the reference image. Keep the same hair style, hair color, shoulder width, and clothing. Show the person from above looking down. Professional photography, clean white background, soft even lighting, 4K, high resolution.",
+      "target_size": 1024,
+      "target_vl_size": 384,
+      "upscale_method": "lanczos",
+      "crop_method": "center",
+      "instruction": "Describe the key features of the input image (hair style, body shape), then generate a top-down view. The background MUST be pure white.",
+      "clip": ["12_clip", 0],
+      "vae": ["8_vae", 0],
+      "vl_resize_image1": ["6_load", 0]
+    },
+    "class_type": "TextEncodeQwenImageEditPlusAdvance_lrzjason",
+    "_meta": {"title": "视图3-编码"}
+  },
+  "50_threequarter_encoder": {
+    "inputs": {
+      "prompt": "A front-left three-quarter view of the same person shown in the reference image. Keep the exact same face identity, facial features, eye shape, nose shape, lip shape, jawline, skin texture, hair style, and body shape. Turn the body and head slightly to the left, revealing the left side of the face. Professional portrait photography, clean white background, soft even lighting, 4K, high resolution.",
+      "target_size": 1024,
+      "target_vl_size": 384,
+      "upscale_method": "lanczos",
+      "crop_method": "center",
+      "instruction": "Describe the key features of the input image (face shape, eyes, nose, lips, skin tone, hair style), then generate a front-left three-quarter view that maintains EXACTLY the same facial identity. The background MUST be pure white.",
+      "clip": ["12_clip", 0],
+      "vae": ["8_vae", 0],
+      "vl_resize_image1": ["6_load", 0]
+    },
+    "class_type": "TextEncodeQwenImageEditPlusAdvance_lrzjason",
+    "_meta": {"title": "视图4-编码"}
+  },
+  "60_side_encoder": {
+    "inputs": {
+      "prompt": "A side profile view of the same person shown in the reference image. Keep the exact same face identity, nose profile, jawline, chin shape, ear shape, hair style, and body silhouette. Show strict side profile, only one eye visible. Professional portrait photography, clean white background, soft even lighting, 4K, high resolution.",
+      "target_size": 1024,
+      "target_vl_size": 384,
+      "upscale_method": "lanczos",
+      "crop_method": "center",
+      "instruction": "Describe the key features of the input image (face profile, nose shape, jawline, hair style), then generate a side profile that maintains EXACTLY the same facial identity. The background MUST be pure white.",
+      "clip": ["12_clip", 0],
+      "vae": ["8_vae", 0],
+      "vl_resize_image1": ["6_load", 0]
+    },
+    "class_type": "TextEncodeQwenImageEditPlusAdvance_lrzjason",
+    "_meta": {"title": "视图5-编码"}
+  },
+  "70_additional_encoder": {
+    "inputs": {
+      "prompt": "A front-right three-quarter view of the same person shown in the reference image. Keep the exact same face identity, facial features, eye shape, nose shape, lip shape, jawline, skin texture, hair style, and body shape. Turn the body and head slightly to the right, revealing the right side of the face. Professional portrait photography, clean white background, soft even lighting, 4K, high resolution.",
+      "target_size": 1024,
+      "target_vl_size": 384,
+      "upscale_method": "lanczos",
+      "crop_method": "center",
+      "instruction": "Describe the key features of the input image (face shape, eyes, nose, lips, skin tone, hair style), then generate a front-right three-quarter view that maintains EXACTLY the same facial identity. The background MUST be pure white.",
+      "clip": ["12_clip", 0],
+      "vae": ["8_vae", 0],
+      "vl_resize_image1": ["6_load", 0]
+    },
+    "class_type": "TextEncodeQwenImageEditPlusAdvance_lrzjason",
+    "_meta": {"title": "视图6-编码"}
+  },
+  "21_front_zero": {
+    "inputs": {"conditioning": ["20_front_encoder", 0]},
+    "class_type": "ConditioningZeroOut",
+    "_meta": {"title": "视图1-条件清零"}
+  },
+  "31_back_zero": {
+    "inputs": {"conditioning": ["30_back_encoder", 0]},
+    "class_type": "ConditioningZeroOut",
+    "_meta": {"title": "视图2-条件清零"}
+  },
+  "41_top_zero": {
+    "inputs": {"conditioning": ["40_top_encoder", 0]},
+    "class_type": "ConditioningZeroOut",
+    "_meta": {"title": "视图3-条件清零"}
+  },
+  "51_threequarter_zero": {
+    "inputs": {"conditioning": ["50_threequarter_encoder", 0]},
+    "class_type": "ConditioningZeroOut",
+    "_meta": {"title": "视图4-条件清零"}
+  },
+  "61_side_zero": {
+    "inputs": {"conditioning": ["60_side_encoder", 0]},
+    "class_type": "ConditioningZeroOut",
+    "_meta": {"title": "视图5-条件清零"}
+  },
+  "71_additional_zero": {
+    "inputs": {"conditioning": ["70_additional_encoder", 0]},
+    "class_type": "ConditioningZeroOut",
+    "_meta": {"title": "视图6-条件清零"}
+  },
+  "23_front_sampler": {
+    "inputs": {
+      "seed": 42,
+      "steps": 30,
+      "cfg": 2.5,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": ["102_apply_instantid_front", 0],
+      "positive": ["20_front_encoder", 0],
+      "negative": ["21_front_zero", 0],
+      "latent_image": ["22_front_latent", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "视图1-采样器"}
+  },
+  "33_back_sampler": {
+    "inputs": {
+      "seed": 43,
+      "steps": 30,
+      "cfg": 2.5,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": ["103_apply_instantid_back", 0],
+      "positive": ["30_back_encoder", 0],
+      "negative": ["31_back_zero", 0],
+      "latent_image": ["32_back_latent", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "视图2-采样器"}
+  },
+  "43_top_sampler": {
+    "inputs": {
+      "seed": 44,
+      "steps": 30,
+      "cfg": 2.5,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": ["104_apply_instantid_top", 0],
+      "positive": ["40_top_encoder", 0],
+      "negative": ["41_top_zero", 0],
+      "latent_image": ["42_top_latent", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "视图3-采样器"}
+  },
+  "53_threequarter_sampler": {
+    "inputs": {
+      "seed": 45,
+      "steps": 30,
+      "cfg": 2.5,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": ["105_apply_instantid_threequarter", 0],
+      "positive": ["50_threequarter_encoder", 0],
+      "negative": ["51_threequarter_zero", 0],
+      "latent_image": ["52_threequarter_latent", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "视图4-采样器"}
+  },
+  "63_side_sampler": {
+    "inputs": {
+      "seed": 46,
+      "steps": 30,
+      "cfg": 2.5,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": ["106_apply_instantid_side", 0],
+      "positive": ["60_side_encoder", 0],
+      "negative": ["61_side_zero", 0],
+      "latent_image": ["62_side_latent", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "视图5-采样器"}
+  },
+  "73_additional_sampler": {
+    "inputs": {
+      "seed": 47,
+      "steps": 30,
+      "cfg": 2.5,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": ["107_apply_instantid_additional", 0],
+      "positive": ["70_additional_encoder", 0],
+      "negative": ["71_additional_zero", 0],
+      "latent_image": ["72_additional_latent", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "视图6-采样器"}
+  },
+  "24_front_vae": {
+    "inputs": {"samples": ["23_front_sampler", 0], "vae": ["8_vae", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "视图1-VAE解码"}
+  },
+  "34_back_vae": {
+    "inputs": {"samples": ["33_back_sampler", 0], "vae": ["8_vae", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "视图2-VAE解码"}
+  },
+  "44_top_vae": {
+    "inputs": {"samples": ["43_top_sampler", 0], "vae": ["8_vae", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "视图3-VAE解码"}
+  },
+  "54_threequarter_vae": {
+    "inputs": {"samples": ["53_threequarter_sampler", 0], "vae": ["8_vae", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "视图4-VAE解码"}
+  },
+  "64_side_vae": {
+    "inputs": {"samples": ["63_side_sampler", 0], "vae": ["8_vae", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "视图5-VAE解码"}
+  },
+  "74_additional_vae": {
+    "inputs": {"samples": ["73_additional_sampler", 0], "vae": ["8_vae", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "视图6-VAE解码"}
+  }
+}

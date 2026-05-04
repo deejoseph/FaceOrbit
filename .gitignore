@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.py.orig
+
+# 项目生成数据（重要！）
+output/
+input/
+logs/
+*.log
+*.db
+
+# 临时文件
+temp/
+tmp/
+*.tmp
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 系统文件
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# ComfyUI 相关（通常独立管理）
+*.safetensors
+*.ckpt
+*.pth
