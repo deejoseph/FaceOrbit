@@ -1,0 +1,229 @@
+{
+  "1": {
+    "inputs": {
+      "ckpt_name": "realvisxlV50_v50LightningBakedvae.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "模型加载"
+    }
+  },
+  "2": {
+    "inputs": {
+      "lora_name": "qwen-image-edit-2511-multiple-angles-lora.safetensors",
+      "strength_model": 0.8,
+      "model": [
+        "1",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "多角度 LoRA"
+    }
+  },
+  "3": {
+    "inputs": {
+      "image": "身份.jpg"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "身份参考图"
+    }
+  },
+  "4": {
+    "inputs": {
+      "instantid_file": "ip-adapter.bin"
+    },
+    "class_type": "InstantIDModelLoader",
+    "_meta": {
+      "title": "InstantID模型"
+    }
+  },
+  "5": {
+    "inputs": {
+      "provider": "CUDA"
+    },
+    "class_type": "InstantIDFaceAnalysis",
+    "_meta": {
+      "title": "人脸分析"
+    }
+  },
+  "6": {
+    "inputs": {
+      "control_net_name": "diffusion_pytorch_model.safetensors"
+    },
+    "class_type": "ControlNetLoader",
+    "_meta": {
+      "title": "ControlNet"
+    }
+  },
+  "7": {
+    "inputs": {
+      "text": "a photo of a man, wearing a plain dark t-shirt, head and shoulders portrait, plain white background, high resolution",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "正向提示词"
+    }
+  },
+  "8": {
+    "inputs": {
+      "text": "worst quality, low quality, blurry, noisy, distorted, deformed, ugly, watermark, asymmetrical, tilted, crooked, out of frame",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "负向提示词"
+    }
+  },
+  "9": {
+    "inputs": {
+      "ip_weight": 0.92,
+      "cn_strength": 0.5,
+      "start_at": 0,
+      "end_at": 0.82,
+      "noise": 0,
+      "combine_embeds": "average",
+      "instantid": [
+        "4",
+        0
+      ],
+      "insightface": [
+        "5",
+        0
+      ],
+      "control_net": [
+        "6",
+        0
+      ],
+      "image": [
+        "3",
+        0
+      ],
+      "model": [
+        "2",
+        0
+      ],
+      "positive": [
+        "7",
+        0
+      ],
+      "negative": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {
+      "title": "InstantID"
+    }
+  },
+  "10": {
+    "inputs": {
+      "width": 896,
+      "height": 1152,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "潜空间"
+    }
+  },
+  "11": {
+    "inputs": {
+      "seed": 216566266158651,
+      "steps": 30,
+      "cfg": 3,
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "denoise": 0.73,
+      "model": [
+        "9",
+        0
+      ],
+      "positive": [
+        "9",
+        1
+      ],
+      "negative": [
+        "9",
+        2
+      ],
+      "latent_image": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "采样器"
+    }
+  },
+  "12": {
+    "inputs": {
+      "vae_name": "sdxl_vae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "VAE加载器"
+    }
+  },
+  "13": {
+    "inputs": {
+      "samples": [
+        "11",
+        0
+      ],
+      "vae": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE解码"
+    }
+  },
+  "14": {
+    "inputs": {
+      "correction_strength": 0.6,
+      "method": "luminance_zones",
+      "auto_preserve": true,
+      "lock_input_image": false,
+      "edge_feather": 5,
+      "original_image": [
+        "3",
+        0
+      ],
+      "processed_image": [
+        "13",
+        0
+      ]
+    },
+    "class_type": "VAEColorCorrector",
+    "_meta": {
+      "title": "VAE色彩校正"
+    }
+  },
+  "15": {
+    "inputs": {
+      "filename_prefix": "InstantID_safe",
+      "images": [
+        "14",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "保存图像"
+    }
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "1": {
+    "inputs": {"ckpt_name": "realvisxlV50_v50LightningBakedvae.safetensors"},
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {"title": "模型加载"}
+  },
+  "2": {
+    "inputs": {
+      "lora_name": "qwen-image-edit-2511-multiple-angles-lora.safetensors",
+      "strength_model": 0.8,
+      "model": ["1", 0]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {"title": "多角度 LoRA"}
+  },
+  "3": {
+    "inputs": {"image": "your_man_face.jpg"},
+    "class_type": "LoadImage",
+    "_meta": {"title": "身份参考图"}
+  },
+  "4": {
+    "inputs": {"vae_name": "sdxl_vae.safetensors"},
+    "class_type": "VAELoader",
+    "_meta": {"title": "VAE加载器(精细VAE)"}
+  },
+  "5": {
+    "inputs": {"instantid_file": "ip-adapter.bin"},
+    "class_type": "InstantIDModelLoader",
+    "_meta": {"title": "InstantID模型"}
+  },
+  "6": {
+    "inputs": {"provider": "CUDA"},
+    "class_type": "InstantIDFaceAnalysis",
+    "_meta": {"title": "人脸分析(CUDA加速)"}
+  },
+  "7": {
+    "inputs": {"control_net_name": "diffusion_pytorch_model.safetensors"},
+    "class_type": "ControlNetLoader",
+    "_meta": {"title": "ControlNet"}
+  },
+  "8": {
+    "inputs": {
+      "text": "a photo of a 40-year-old man's face, masculine appearance, wearing a plain dark t-shirt, head and shoulders portrait, face centered in frame, looking at camera, neutral expression, short hair, slight stubble, smooth skin, plain background, high resolution, 8k, sharp focus, studio lighting, vibrant colors, high contrast, clear, professional headshot",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "正向提示词"}
+  },
+  "9": {
+    "inputs": {
+      "text": "worst quality, low quality, blurry, noisy, pixelated, distorted, deformed, ugly, bad anatomy, watermark, extra limbs, fused fingers, bad proportions, disfigured, out of frame, cropped, feminine clothing, dress, makeup, lipstick, earrings, necklace, feminine accessories, long hair, wrinkles, aged, old, elderly, grey hair, dull, low contrast, faded, washed out",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "负向提示词"}
+  },
+  "10": {
+    "inputs": {
+      "ip_weight": 0.8,
+      "cn_strength": 0.6,
+      "start_at": 0,
+      "end_at": 0.7,
+      "noise": 0,
+      "combine_embeds": "average",
+      "instantid": ["5", 0],
+      "insightface": ["6", 0],
+      "control_net": ["7", 0],
+      "image": ["3", 0],
+      "model": ["2", 0],
+      "positive": ["8", 0],
+      "negative": ["9", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {"title": "InstantID"}
+  },
+  "11": {
+    "inputs": {"width": 1024, "height": 1280, "batch_size": 1},
+    "class_type": "EmptyLatentImage",
+    "_meta": {"title": "潜空间"}
+  },
+  "12": {
+    "inputs": {
+      "seed": 42,
+      "steps": 35,
+      "cfg": 2.8,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.75,
+      "model": ["10", 0],
+      "positive": ["10", 1],
+      "negative": ["10", 2],
+      "latent_image": ["11", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "采样器"}
+  },
+  "13": {
+    "inputs": {"samples": ["12", 0], "vae": ["4", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "VAE解码"}
+  },
+  "14": {
+    "inputs": {
+      "image": ["13", 0],
+      "brightness": 1.05,
+      "contrast": 1.1,
+      "saturation": 1.15
+    },
+    "class_type": "ColorCorrect",
+    "_meta": {"title": "色彩校正"}
+  },
+  "15": {
+    "inputs": {
+      "images": ["14", 0],
+      "filename_prefix": "InstantID_output"
+    },
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存高清PNG"}
+  },
+  "16": {
+    "inputs": {"images": ["14", 0]},
+    "class_type": "PreviewImage",
+    "_meta": {"title": "预览"}
+  }
+}

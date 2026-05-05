@@ -5,6 +5,105 @@ let currentJobId = null;
 let pollInterval = null;
 let currentImageData = null;
 
+// 存储5个图片的数据
+let uploadedImages = {
+    front: null,
+    leftfront: null,
+    rightfront: null,
+    side: null,
+    back: null
+};
+
+// 初始化多图上传事件
+function initMultiImageUpload() {
+    const uploadSlots = document.querySelectorAll('.image-upload');
+    
+    uploadSlots.forEach(input => {
+        input.addEventListener('change', (e) => {
+            const slot = input.dataset.slot;
+            const file = e.target.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    uploadedImages[slot] = event.target.result;
+                    // 显示预览
+                    const previewDiv = document.getElementById(`preview_${slot}`);
+                    previewDiv.innerHTML = `<img src="${uploadedImages[slot]}" alt="预览">`;
+                    previewDiv.style.display = 'flex';
+                    const emptyDiv = previewDiv.nextElementSibling;
+                    if (emptyDiv) emptyDiv.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                uploadedImages[slot] = null;
+                const previewDiv = document.getElementById(`preview_${slot}`);
+                previewDiv.innerHTML = '';
+                const emptyDiv = previewDiv.nextElementSibling;
+                if (emptyDiv) emptyDiv.style.display = 'block';
+            }
+        });
+    });
+}
+
+// 修改生成函数，提交5个图片
+async function generateAll() {
+    // 检查正面图是否上传
+    if (!uploadedImages.front) {
+        showStatus('请至少上传一张正面参考图', 'error');
+        return;
+    }
+    
+    showStatus('正在提交任务...', 'loading');
+    
+    // 构建5个图片的数组（按顺序：正面、左前、右前、侧面、背面）
+    const imagesArray = [
+        uploadedImages.front || '',
+        uploadedImages.leftfront || '',
+        uploadedImages.rightfront || '',
+        uploadedImages.side || '',
+        uploadedImages.back || ''
+    ];
+    
+    const payload = {
+        images: imagesArray,
+        mode: currentMode,
+        views: currentViews.map(v => ({
+            name: v.name,
+            zoom: v.zoom,
+            steps: v.steps,
+            cfg: v.cfg
+        }))
+    };
+    
+    try {
+        const response = await fetch('/api/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
+        const data = await response.json();
+        if (data.job_id) {
+            currentJobId = data.job_id;
+            startPolling();
+            showStatus('任务已提交，生成中...', 'running');
+        } else {
+            showStatus('提交失败: ' + JSON.stringify(data), 'error');
+        }
+    } catch (error) {
+        showStatus('网络错误: ' + error.message, 'error');
+    }
+}
+
+// 在 DOMContentLoaded 中调用
+document.addEventListener('DOMContentLoaded', () => {
+    loadModes();
+    initEventListeners();
+    initMultiImageUpload();  // 新增
+    hideAllPreviews();
+});
+
 // 模式显示名称映射
 const modeDisplayNames = {
     'Celadon': '🍵 青瓷 Celadon',

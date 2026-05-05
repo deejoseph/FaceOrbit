@@ -256,17 +256,9 @@ def build_prompt_for_view(view_name: str, horizontal: int, vertical: int, zoom: 
     view_desc = view_desc_map.get(view_name, "view")
     return f"Turn the camera to {view_desc}, {angle_desc}, zoom level {zoom}. Show the same subject from this angle. Keep consistency with the original image."
 
-def load_workflow(filenames: list[str], views: list[dict], mode: str = "Human", is_single: bool = False) -> dict:
+def load_workflow(filenames: list[str], views: list[dict], mode: str = "Celadon", is_single: bool = False) -> dict:
     workflow = json.loads(WORKFLOW_TEMPLATE.read_text(encoding="utf-8-sig"))
     
-    # 5个参考图输入槽
-    # filenames 索引: 0=正面, 1=左前, 2=右前, 3=侧面, 4=背面
-    workflow["load_front"]["inputs"]["image"] = filenames[0] if filenames[0] else ""
-    workflow["load_leftfront"]["inputs"]["image"] = filenames[1] if len(filenames) > 1 and filenames[1] else ""
-    workflow["load_rightfront"]["inputs"]["image"] = filenames[2] if len(filenames) > 2 and filenames[2] else ""
-    workflow["load_side"]["inputs"]["image"] = filenames[3] if len(filenames) > 3 and filenames[3] else ""
-    workflow["load_back"]["inputs"]["image"] = filenames[4] if len(filenames) > 4 and filenames[4] else ""
-
     # 🔧 修复：单图时只设置第一个参考图，其他设置为空或删除引用
     if len(filenames) == 1:
         img = filenames[0]
@@ -567,28 +559,31 @@ class PolyViewHandler(SimpleHTTPRequestHandler):
             length = int(self.headers.get("Content-Length", "0"))
             payload = json.loads(self.rfile.read(length).decode("utf-8"))
             
-            # 支持最多5张参考图
+            # 支持单图（imageData）或多图（images）
+            image_data = payload.get("imageData")
             images_data = payload.get("images", [])
-            if not images_data:
-                return json_response(self, {"error": "请至少上传一张正面参考图"}, status=400)
-
-            if len(images_data) > 5:
-                return json_response(self, {"error": "最多上传5张参考图"}, status=400)
-
-            comfy_filenames = []
-            for i, img_data in enumerate(images_data):
-                if img_data:
-                    img_bytes = decode_data_url(img_data)
-                    comfy_filename = f"faceorbit_{uuid.uuid4().hex}_{i}.png"
-                    (PROJECT_INPUT / comfy_filename).write_bytes(img_bytes)
-                    (COMFY_INPUT / comfy_filename).write_bytes(img_bytes)
-                    comfy_filenames.append(comfy_filename)
-                else:
-                    comfy_filenames.append("")  # 空字符串表示没有这张图
-
-            # 确保至少有正面图（索引0）
-            if not comfy_filenames[0]:
-                return json_response(self, {"error": "正面参考图是必填的"}, status=400)
+            
+            if image_data:
+                img_bytes = decode_data_url(image_data)
+                comfy_filename = f"polyview_{uuid.uuid4().hex}.png"
+                (PROJECT_INPUT / comfy_filename).write_bytes(img_bytes)
+                (COMFY_INPUT / comfy_filename).write_bytes(img_bytes)
+                comfy_filenames = [comfy_filename]
+            elif images_data:
+                if len(images_data) > 3:
+                    return json_response(self, {"error": "Maximum 3 images allowed"}, status=400)
+                comfy_filenames = []
+                for i, img_data in enumerate(images_data):
+                    if img_data:
+                        img_bytes = decode_data_url(img_data)
+                        comfy_filename = f"polyview_{uuid.uuid4().hex}_{i}.png"
+                        (PROJECT_INPUT / comfy_filename).write_bytes(img_bytes)
+                        (COMFY_INPUT / comfy_filename).write_bytes(img_bytes)
+                        comfy_filenames.append(comfy_filename)
+                    else:
+                        comfy_filenames.append(f"dummy_{i}.png")
+            else:
+                return json_response(self, {"error": "No image provided"}, status=400)
             
             mode = payload["mode"]
             views = normalize_views(mode, payload.get("views"))

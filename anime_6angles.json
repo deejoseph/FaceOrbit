@@ -1,0 +1,274 @@
+{
+  "1": {
+    "inputs": {"ckpt_name": "animagine-xl-3.1.safetensors"},
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {"title": "二次元模型3.1"}
+  },
+  "2": {
+    "inputs": {
+      "lora_name": "qwen-image-edit-2511-multiple-angles-lora.safetensors",
+      "strength_model": 0.3,
+      "model": ["1", 0]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {"title": "多角度 LoRA"}
+  },
+  "3": {
+    "inputs": {"image": "your_face.jpg"},
+    "class_type": "LoadImage",
+    "_meta": {"title": "身份参考图"}
+  },
+  "4": {
+    "inputs": {"instantid_file": "ip-adapter.bin"},
+    "class_type": "InstantIDModelLoader",
+    "_meta": {"title": "InstantID模型"}
+  },
+  "5": {
+    "inputs": {"provider": "CUDA"},
+    "class_type": "InstantIDFaceAnalysis",
+    "_meta": {"title": "人脸分析"}
+  },
+  "6": {
+    "inputs": {"control_net_name": "diffusion_pytorch_model.safetensors"},
+    "class_type": "ControlNetLoader",
+    "_meta": {"title": "ControlNet"}
+  },
+  "8": {
+    "inputs": {
+      "text": "nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name, ugly, deformed, grayscale, dull, washed out, desaturated, low contrast",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "负向提示词"}
+  },
+  "10": {
+    "inputs": {"width": 832, "height": 1216, "batch_size": 1},
+    "class_type": "EmptyLatentImage",
+    "_meta": {"title": "潜空间"}
+  },
+  "12": {
+    "inputs": {"vae_name": "sdxl_vae.safetensors"},
+    "class_type": "VAELoader",
+    "_meta": {"title": "VAE加载器"}
+  },
+  "7_front": {
+    "inputs": {
+      "text": "masterpiece, best quality, very aesthetic, 1man, front view, looking at viewer, solo, upper body, plain background, vibrant, high saturation, colorful, bright, detailed face",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "正向提示词-正面"}
+  },
+  "9_front": {
+    "inputs": {
+      "ip_weight": 0.8, "cn_strength": 0.35, "start_at": 0, "end_at": 0.75, "noise": 0, "combine_embeds": "average",
+      "instantid": ["4", 0], "insightface": ["5", 0], "control_net": ["6", 0],
+      "image": ["3", 0], "model": ["2", 0],
+      "positive": ["7_front", 0], "negative": ["8", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {"title": "InstantID-正面"}
+  },
+  "11_front": {
+    "inputs": {
+      "seed": 42, "steps": 30, "cfg": 6.5, "sampler_name": "euler_ancestral", "scheduler": "simple", "denoise": 0.7,
+      "model": ["9_front", 0], "positive": ["9_front", 1], "negative": ["9_front", 2], "latent_image": ["10", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "采样器-正面"}
+  },
+  "13_front": {
+    "inputs": {"samples": ["11_front", 0], "vae": ["12", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "VAE解码-正面"}
+  },
+  "14_front": {
+    "inputs": {
+      "correction_strength": 0.65, "method": "luminance_zones", "auto_preserve": true,
+      "original_image": ["3", 0], "processed_image": ["13_front", 0]
+    },
+    "class_type": "VAEColorCorrector",
+    "_meta": {"title": "色彩校正-正面"}
+  },
+  "15_front": {
+    "inputs": {"filename_prefix": "anime_front", "images": ["14_front", 0]},
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存-正面"}
+  },
+  "7_back": {
+    "inputs": {
+      "text": "masterpiece, best quality, very aesthetic, 1man, from behind, back view, looking away, solo, upper body, plain background, vibrant, high saturation, colorful, bright, detailed",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "正向提示词-背面"}
+  },
+  "9_back": {
+    "inputs": {
+      "ip_weight": 0.8, "cn_strength": 0.35, "start_at": 0, "end_at": 0.75, "noise": 0, "combine_embeds": "average",
+      "instantid": ["4", 0], "insightface": ["5", 0], "control_net": ["6", 0],
+      "image": ["3", 0], "model": ["2", 0],
+      "positive": ["7_back", 0], "negative": ["8", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {"title": "InstantID-背面"}
+  },
+  "11_back": {
+    "inputs": {
+      "seed": 43, "steps": 30, "cfg": 6.5, "sampler_name": "euler_ancestral", "scheduler": "simple", "denoise": 0.7,
+      "model": ["9_back", 0], "positive": ["9_back", 1], "negative": ["9_back", 2], "latent_image": ["10", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "采样器-背面"}
+  },
+  "13_back": {
+    "inputs": {"samples": ["11_back", 0], "vae": ["12", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "VAE解码-背面"}
+  },
+  "14_back": {
+    "inputs": {
+      "correction_strength": 0.65, "method": "luminance_zones", "auto_preserve": true,
+      "original_image": ["3", 0], "processed_image": ["13_back", 0]
+    },
+    "class_type": "VAEColorCorrector",
+    "_meta": {"title": "色彩校正-背面"}
+  },
+  "15_back": {
+    "inputs": {"filename_prefix": "anime_back", "images": ["14_back", 0]},
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存-背面"}
+  },
+  "7_side": {
+    "inputs": {
+      "text": "masterpiece, best quality, very aesthetic, 1man, side view, profile shot, facing left, one eye visible, side profile, solo, upper body, plain background, vibrant, high saturation, colorful, bright, detailed face",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "正向提示词-侧面"}
+  },
+  "9_side": {
+    "inputs": {
+      "ip_weight": 0.8, "cn_strength": 0.35, "start_at": 0, "end_at": 0.75, "noise": 0, "combine_embeds": "average",
+      "instantid": ["4", 0], "insightface": ["5", 0], "control_net": ["6", 0],
+      "image": ["3", 0], "model": ["2", 0],
+      "positive": ["7_side", 0], "negative": ["8", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {"title": "InstantID-侧面"}
+  },
+  "11_side": {
+    "inputs": {
+      "seed": 44, "steps": 30, "cfg": 6.5, "sampler_name": "euler_ancestral", "scheduler": "simple", "denoise": 0.7,
+      "model": ["9_side", 0], "positive": ["9_side", 1], "negative": ["9_side", 2], "latent_image": ["10", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "采样器-侧面"}
+  },
+  "13_side": {
+    "inputs": {"samples": ["11_side", 0], "vae": ["12", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "VAE解码-侧面"}
+  },
+  "14_side": {
+    "inputs": {
+      "correction_strength": 0.65, "method": "luminance_zones", "auto_preserve": true,
+      "original_image": ["3", 0], "processed_image": ["13_side", 0]
+    },
+    "class_type": "VAEColorCorrector",
+    "_meta": {"title": "色彩校正-侧面"}
+  },
+  "15_side": {
+    "inputs": {"filename_prefix": "anime_side", "images": ["14_side", 0]},
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存-侧面"}
+  },
+  "7_threequarter": {
+    "inputs": {
+      "text": "masterpiece, best quality, very aesthetic, 1man, three quarter view, 3/4 pose, turned slightly, looking at camera, solo, upper body, plain background, vibrant, high saturation, colorful, bright, detailed face",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "正向提示词-四分之三"}
+  },
+  "9_threequarter": {
+    "inputs": {
+      "ip_weight": 0.8, "cn_strength": 0.35, "start_at": 0, "end_at": 0.75, "noise": 0, "combine_embeds": "average",
+      "instantid": ["4", 0], "insightface": ["5", 0], "control_net": ["6", 0],
+      "image": ["3", 0], "model": ["2", 0],
+      "positive": ["7_threequarter", 0], "negative": ["8", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {"title": "InstantID-四分之三"}
+  },
+  "11_threequarter": {
+    "inputs": {
+      "seed": 45, "steps": 30, "cfg": 6.5, "sampler_name": "euler_ancestral", "scheduler": "simple", "denoise": 0.7,
+      "model": ["9_threequarter", 0], "positive": ["9_threequarter", 1], "negative": ["9_threequarter", 2], "latent_image": ["10", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "采样器-四分之三"}
+  },
+  "13_threequarter": {
+    "inputs": {"samples": ["11_threequarter", 0], "vae": ["12", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "VAE解码-四分之三"}
+  },
+  "14_threequarter": {
+    "inputs": {
+      "correction_strength": 0.65, "method": "luminance_zones", "auto_preserve": true,
+      "original_image": ["3", 0], "processed_image": ["13_threequarter", 0]
+    },
+    "class_type": "VAEColorCorrector",
+    "_meta": {"title": "色彩校正-四分之三"}
+  },
+  "15_threequarter": {
+    "inputs": {"filename_prefix": "anime_threequarter", "images": ["14_threequarter", 0]},
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存-四分之三"}
+  },
+  "7_rightfront": {
+    "inputs": {
+      "text": "masterpiece, best quality, very aesthetic, 1man, facing right, looking right, right side, angled right, solo, upper body, plain background, vibrant, high saturation, colorful, bright, detailed face",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "正向提示词-右前"}
+  },
+  "9_rightfront": {
+    "inputs": {
+      "ip_weight": 0.8, "cn_strength": 0.35, "start_at": 0, "end_at": 0.75, "noise": 0, "combine_embeds": "average",
+      "instantid": ["4", 0], "insightface": ["5", 0], "control_net": ["6", 0],
+      "image": ["3", 0], "model": ["2", 0],
+      "positive": ["7_rightfront", 0], "negative": ["8", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {"title": "InstantID-右前"}
+  },
+  "11_rightfront": {
+    "inputs": {
+      "seed": 46, "steps": 30, "cfg": 6.5, "sampler_name": "euler_ancestral", "scheduler": "simple", "denoise": 0.7,
+      "model": ["9_rightfront", 0], "positive": ["9_rightfront", 1], "negative": ["9_rightfront", 2], "latent_image": ["10", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "采样器-右前"}
+  },
+  "13_rightfront": {
+    "inputs": {"samples": ["11_rightfront", 0], "vae": ["12", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "VAE解码-右前"}
+  },
+  "14_rightfront": {
+    "inputs": {
+      "correction_strength": 0.65, "method": "luminance_zones", "auto_preserve": true,
+      "original_image": ["3", 0], "processed_image": ["13_rightfront", 0]
+    },
+    "class_type": "VAEColorCorrector",
+    "_meta": {"title": "色彩校正-右前"}
+  },
+  "15_rightfront": {
+    "inputs": {"filename_prefix": "anime_rightfront", "images": ["14_rightfront", 0]},
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存-右前"}
+  }
+}
