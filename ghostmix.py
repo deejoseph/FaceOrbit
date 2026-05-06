@@ -25,7 +25,7 @@ TEMP_DIR = "temp"
 OUTPUT_DIR = "output"
 COMFYUI_API = "http://127.0.0.1:8188"
 MODEL_OPTIONS = {
-    "GhostMix V2.0": "GhostMix-V2.0-fp16-BakedVAE.safetensors"
+    "GhostXL V1.0": "ghostxl_v10BakedVAE.safetensors"
 }
 
 # 创建必要的文件夹
@@ -36,12 +36,12 @@ for dir_name in [TEMPLATES_DIR, TEMP_DIR, OUTPUT_DIR]:
 DEFAULT_NEGATIVE = "nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name, ugly, deformed, grayscale, dull, washed out, desaturated, low contrast"
 
 DEFAULT_PROMPTS = {
-    "front": "2.5D, game CG, high quality, a man, detailed face, soft shading, volumetric lighting, beautiful, vibrant colors, semi-realistic, digital art, front view, looking at viewer, plain background",
-    "back": "2.5D, game CG, high quality, a man, from behind, back view, looking away, soft shading, volumetric lighting, semi-realistic, digital art, plain background",
-    "side": "2.5D, game CG, high quality, a man, side view, profile shot, facing left, soft shading, volumetric lighting, semi-realistic, digital art, plain background",
-    "threequarter": "2.5D, game CG, high quality, a man, three quarter view, 3/4 pose, turned slightly, looking at camera, soft shading, volumetric lighting, semi-realistic, digital art, plain background",
-    "rightfront": "2.5D, game CG, high quality, a man, facing right, looking right, right side angle, soft shading, volumetric lighting, semi-realistic, digital art, plain background",
-    "top": "2.5D, game CG, high quality, a man, looking up, from below, low angle, looking upward, soft shading, volumetric lighting, semi-realistic, digital art, plain background"
+    "front": "masterpiece, best quality, very aesthetic, 2.5D, game CG, a man, detailed face, soft shading, volumetric lighting, beautiful, vibrant colors, semi-realistic, digital art, front view, looking at viewer, plain background",
+    "back": "masterpiece, best quality, very aesthetic, 2.5D, game CG, a man, from behind, back view, looking away, soft shading, volumetric lighting, semi-realistic, digital art, plain background",
+    "side": "masterpiece, best quality, very aesthetic, 2.5D, game CG, a man, side view, profile shot, facing left, soft shading, volumetric lighting, semi-realistic, digital art, plain background",
+    "threequarter": "masterpiece, best quality, very aesthetic, 2.5D, game CG, a man, three quarter view, 3/4 pose, turned slightly, looking at camera, soft shading, volumetric lighting, semi-realistic, digital art, plain background",
+    "rightfront": "masterpiece, best quality, very aesthetic, 2.5D, game CG, a man, facing right, looking right, right side angle, soft shading, volumetric lighting, semi-realistic, digital art, plain background",
+    "top": "masterpiece, best quality, very aesthetic, 2.5D, game CG, a man, looking up, from below, low angle, looking upward, soft shading, volumetric lighting, semi-realistic, digital art, plain background"
 }
 
 # ==================== 辅助函数 ====================
@@ -231,28 +231,9 @@ def generate_images(
     with open(WORKFLOW_PATH, 'r', encoding='utf-8') as f:
         workflow = json.load(f)
     
-    # ========== 新增：移除所有 ControlNet 连接 ==========
-    removed_count = 0
-    for node_id, node_data in workflow.items():
-        class_type = node_data.get("class_type", "")
-        if class_type in ["ApplyInstantID", "ApplyInstantIDAdvanced"]:
-            if "control_net" in node_data["inputs"]:
-                del node_data["inputs"]["control_net"]
-                removed_count += 1
-                print(f"✅ 已移除节点 {node_id} 的 control_net")
+    # 注意：不要删除 ControlNet 节点！ApplyInstantID 需要它
     
-    # 同时删除 ControlNetLoader 节点（如果存在）
-    nodes_to_delete = []
-    for node_id, node_data in workflow.items():
-        if node_data.get("class_type") == "ControlNetLoader":
-            nodes_to_delete.append(node_id)
-    
-    for node_id in nodes_to_delete:
-        del workflow[node_id]
-        print(f"✅ 已删除 ControlNetLoader 节点 {node_id}")
-    
-    print(f"📊 共移除 {removed_count} 个节点的 control_net 连接")
-    
+    # 保存上传的图片
     comfyui_input_dir = "D:/PixelSmile/ComfyUI-aki/ComfyUI-aki-v3/ComfyUI/input"
     os.makedirs(comfyui_input_dir, exist_ok=True)
 
@@ -265,9 +246,12 @@ def generate_images(
     shutil.copy2(input_image, local_image_path)
     print(f"📸 图片已复制到 ComfyUI input: {local_image_path}")
 
+    # 修改工作流参数
     workflow["3"]["inputs"]["image"] = local_image_path
-    workflow["1"]["inputs"]["ckpt_name"] = MODEL_OPTIONS.get(model_name, "GhostMix-V2.0-fp16-BakedVAE.safetensors")
+    # 使用选择的模型，默认使用 ghostxl_v10BakedVAE.safetensors
+    workflow["1"]["inputs"]["ckpt_name"] = MODEL_OPTIONS.get(model_name, "ghostxl_v10BakedVAE.safetensors")
     
+    # 设置提示词
     angle_prompts = {
         "7_front": prompt_front,
         "7_back": prompt_back,
@@ -284,17 +268,18 @@ def generate_images(
     if "8" in workflow:
         workflow["8"]["inputs"]["text"] = negative_prompt
     
+    # 设置 InstantID 参数（注意：ApplyInstantID 使用 weight 而不是 ip_weight）
     angle_configs = {
-        "9_front": {"ip_weight": ip_weight, "cn_strength": cn_strength},
-        "9_back": {"ip_weight": ip_weight, "cn_strength": cn_strength * 0.8},
-        "9_side": {"ip_weight": ip_weight * 0.85, "cn_strength": cn_strength * 0.5},
-        "9_threequarter": {"ip_weight": ip_weight, "cn_strength": cn_strength},
-        "9_rightfront": {"ip_weight": ip_weight, "cn_strength": cn_strength},
-        "9_top": {"ip_weight": ip_weight * 0.8, "cn_strength": cn_strength * 0.6}
+        "9_front": {"weight": ip_weight, "cn_strength": cn_strength},
+        "9_back": {"weight": ip_weight, "cn_strength": cn_strength * 0.8},
+        "9_side": {"weight": ip_weight * 0.85, "cn_strength": cn_strength * 0.5},
+        "9_threequarter": {"weight": ip_weight, "cn_strength": cn_strength},
+        "9_rightfront": {"weight": ip_weight, "cn_strength": cn_strength},
+        "9_top": {"weight": ip_weight * 0.8, "cn_strength": cn_strength * 0.6}
     }
     for node_id, config in angle_configs.items():
         if node_id in workflow:
-            workflow[node_id]["inputs"]["ip_weight"] = config["ip_weight"]
+            workflow[node_id]["inputs"]["weight"] = config["weight"]
             workflow[node_id]["inputs"]["cn_strength"] = config["cn_strength"]
     
     for node_id in ["11_front", "11_back", "11_side", "11_threequarter", "11_rightfront", "11_top"]:
@@ -320,7 +305,7 @@ def generate_images(
     images, status = run_comfyui_workflow(workflow, progress)
     
     if images and any(images):
-        saved_paths, job_dir = save_images_to_project(images, prefix="ghostmix")
+        saved_paths, job_dir = save_images_to_project(images, prefix="ghostxl")
         msg = f"✅ 生成完成！图片已保存到: {job_dir}"
         result = list(images[:6]) + [msg]
         while len(result) < 7:
@@ -342,7 +327,7 @@ def create_ui():
                 input_image = gr.Image(label="📸 上传头像照片", type="filepath", height=250)
                 gr.Markdown("> 📌 **照片的作用**：决定角色的**面部特征**（脸型、五官、表情）")
                 
-                model_selector = gr.Dropdown(choices=list(MODEL_OPTIONS.keys()), label="🎮 选择模型", value="GhostMix V2.0")
+                model_selector = gr.Dropdown(choices=list(MODEL_OPTIONS.keys()), label="🎮 选择模型", value="GhostXL V1.0")
                 
                 with gr.Accordion("📝 各角度提示词设置", open=True):
                     with gr.Tabs():
@@ -362,15 +347,15 @@ def create_ui():
                     negative_prompt = gr.Textbox(label="负向提示词（所有角度共用）", value=DEFAULT_NEGATIVE, lines=2)
                 
                 with gr.Accordion("⚙️ 生成参数", open=False):
-                    ip_weight = gr.Slider(0.5, 1.0, value=0.88, step=0.01, label="🎭 相似度")
+                    ip_weight = gr.Slider(0.5, 1.0, value=0.85, step=0.01, label="🎭 相似度")
                     cn_strength = gr.Slider(0.0, 0.8, value=0.45, step=0.01, label="🎯 姿态控制")
                     denoise = gr.Slider(0.5, 0.9, value=0.7, step=0.01, label="✨ 创意度")
-                    cfg = gr.Slider(1.0, 10.0, value=2.8, step=0.1, label="📝 提示词引导")
-                    steps = gr.Slider(20, 50, value=30, step=1, label="🔢 采样步数")
+                    cfg = gr.Slider(1.0, 10.0, value=6.5, step=0.1, label="📝 提示词引导")
+                    steps = gr.Slider(20, 50, value=28, step=1, label="🔢 采样步数")
                     correction_strength = gr.Slider(0.0, 1.0, value=0.5, step=0.05, label="🎨 色彩校正")
                     with gr.Row():
-                        width = gr.Number(value=832, label="宽度")
-                        height = gr.Number(value=1216, label="高度")
+                        width = gr.Number(value=1024, label="宽度")
+                        height = gr.Number(value=1024, label="高度")
                 
                 with gr.Accordion("💾 模板管理", open=False):
                     with gr.Row():
@@ -413,7 +398,7 @@ def create_ui():
         def set_params(params):
             if not params: return [gr.update()]*16
             return [
-                params.get("model_name", "GhostMix V2.0"),
+                params.get("model_name", "GhostXL V1.0"),
                 params.get("prompt_front", DEFAULT_PROMPTS["front"]),
                 params.get("prompt_back", DEFAULT_PROMPTS["back"]),
                 params.get("prompt_side", DEFAULT_PROMPTS["side"]),
@@ -421,9 +406,9 @@ def create_ui():
                 params.get("prompt_rightfront", DEFAULT_PROMPTS["rightfront"]),
                 params.get("prompt_top", DEFAULT_PROMPTS["top"]),
                 params.get("negative_prompt", DEFAULT_NEGATIVE),
-                params.get("ip_weight", 0.88), params.get("cn_strength", 0.45),
-                params.get("denoise", 0.7), params.get("cfg", 2.8), params.get("steps", 30),
-                params.get("correction_strength", 0.5), params.get("width", 832), params.get("height", 1216)
+                params.get("ip_weight", 0.85), params.get("cn_strength", 0.45),
+                params.get("denoise", 0.7), params.get("cfg", 6.5), params.get("steps", 28),
+                params.get("correction_strength", 0.5), params.get("width", 1024), params.get("height", 1024)
             ]
         
         save_btn.click(lambda n: save_template(n, get_params()), [template_name], [save_status, template_list])
