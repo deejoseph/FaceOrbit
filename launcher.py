@@ -10,6 +10,7 @@ import os
 import webbrowser
 import threading
 import time
+import socket
 
 # 添加项目根目录到路径
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -21,9 +22,62 @@ except ImportError:
     sys.exit(1)
 
 
+def is_port_in_use(port):
+    """检查端口是否被占用"""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        try:
+            s.bind(('127.0.0.1', port))
+            return False
+        except socket.error:
+            return True
+
+
+def kill_process_on_port(port):
+    """结束占用指定端口的进程"""
+    import subprocess
+    try:
+        # 查找占用端口的 PID
+        result = subprocess.run(
+            f'netstat -ano | findstr :{port} | findstr LISTENING',
+            shell=True,
+            capture_output=True,
+            text=True
+        )
+        if result.stdout:
+            lines = result.stdout.strip().split('\n')
+            for line in lines:
+                parts = line.split()
+                if len(parts) >= 5:
+                    pid = parts[4]
+                    # 结束进程
+                    subprocess.run(f'taskkill /PID {pid} /F', shell=True)
+                    print(f"✅ 已结束占用端口 {port} 的进程 (PID: {pid})")
+                    return True
+    except Exception as e:
+        print(f"⚠️ 清理端口 {port} 时出错: {e}")
+    return False
+
+
+def ensure_port_free(port):
+    """确保端口可用，如果被占用则尝试清理"""
+    if is_port_in_use(port):
+        print(f"⚠️ 端口 {port} 被占用，正在尝试清理...")
+        kill_process_on_port(port)
+        time.sleep(1)
+        if is_port_in_use(port):
+            print(f"❌ 端口 {port} 仍被占用，请手动关闭相关程序")
+            return False
+        else:
+            print(f"✅ 端口 {port} 已清理完成")
+    return True
+
+
 def launch_with_delay(port, script_name, delay=5):
     """启动子进程，等待指定时间后打开浏览器"""
     def _launch():
+        # 先清理端口
+        ensure_port_free(port)
+        
         print(f"🚀 正在启动 {script_name}...")
         process = subprocess.Popen([sys.executable, script_name])
         print(f"⏳ 等待 {delay} 秒让服务启动...")
@@ -120,8 +174,7 @@ def create_launcher():
            - 影视明星：7864
         3. 首次启动需要等待 5-10 秒，浏览器会自动打开
         4. 请确保 ComfyUI 已启动（http://127.0.0.1:8188）
-        
-        ⚠️ 如果页面打不开，请稍等片刻后手动刷新
+        5. 如果端口被占用，程序会自动清理
         """)
         
         # 按钮事件
@@ -138,6 +191,10 @@ def open_browser(url, delay=1.5):
 
 
 if __name__ == "__main__":
+    # 启动前先清理所有可能被占用的端口
+    for port in [7861, 7862, 7863, 7864]:
+        ensure_port_free(port)
+    
     demo = create_launcher()
     local_url = "http://127.0.0.1:7860"
     

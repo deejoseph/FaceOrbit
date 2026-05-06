@@ -50,7 +50,8 @@ def list_templates():
     return templates
 
 def save_template(name, params):
-    if not name: return "❌ 请输入模板名称", gr.Dropdown(choices=list_templates())
+    if not name:
+        return "❌ 请输入模板名称", gr.Dropdown(choices=list_templates())
     filepath = os.path.join(TEMPLATES_DIR, f"{name}.json")
     with open(filepath, 'w', encoding='utf-8') as f:
         json.dump({"name": name, "params": params, "created_at": datetime.now().isoformat()}, f, indent=2)
@@ -58,19 +59,22 @@ def save_template(name, params):
 
 def load_template(name):
     filepath = os.path.join(TEMPLATES_DIR, f"{name}.json")
-    if not os.path.exists(filepath): return None, f"❌ 模板「{name}」不存在"
+    if not os.path.exists(filepath):
+        return None, f"❌ 模板「{name}」不存在"
     with open(filepath, 'r', encoding='utf-8') as f:
         data = json.load(f)
     return data["params"], f"✅ 已加载模板「{name}」"
 
 def delete_template(name):
     filepath = os.path.join(TEMPLATES_DIR, f"{name}.json")
-    if os.path.exists(filepath): os.remove(filepath)
+    if os.path.exists(filepath):
+        os.remove(filepath)
     return f"✅ 已删除模板「{name}」", gr.Dropdown(choices=list_templates())
 
 def save_images_to_project(images, prefix="ghostmix"):
     """保存单张图片和拼图到规范的文件夹结构"""
-    if not images: return [], ""
+    if not images:
+        return [], ""
     
     job_folder_name = datetime.now().strftime("%Y%m%d_%H%M%S")
     job_dir = os.path.join(OUTPUT_DIR, "jobs", job_folder_name)
@@ -231,9 +235,7 @@ def generate_images(
     with open(WORKFLOW_PATH, 'r', encoding='utf-8') as f:
         workflow = json.load(f)
     
-    # 注意：不要删除 ControlNet 节点！ApplyInstantID 需要它
-    
-    # 保存上传的图片
+    # 保存上传的图片到 ComfyUI input 目录
     comfyui_input_dir = "D:/PixelSmile/ComfyUI-aki/ComfyUI-aki-v3/ComfyUI/input"
     os.makedirs(comfyui_input_dir, exist_ok=True)
 
@@ -246,12 +248,13 @@ def generate_images(
     shutil.copy2(input_image, local_image_path)
     print(f"📸 图片已复制到 ComfyUI input: {local_image_path}")
 
-    # 修改工作流参数
+    # 修改图片路径
     workflow["3"]["inputs"]["image"] = local_image_path
-    # 使用选择的模型，默认使用 ghostxl_v10BakedVAE.safetensors
+    
+    # 设置模型名（与 cinema.py 格式一致）
     workflow["1"]["inputs"]["ckpt_name"] = MODEL_OPTIONS.get(model_name, "ghostxl_v10BakedVAE.safetensors")
     
-    # 设置提示词
+    # 设置提示词（与 cinema.py 格式一致）
     angle_prompts = {
         "7_front": prompt_front,
         "7_back": prompt_back,
@@ -265,33 +268,37 @@ def generate_images(
         if node_id in workflow:
             workflow[node_id]["inputs"]["text"] = prompt_text
     
+    # 设置负向提示词
     if "8" in workflow:
         workflow["8"]["inputs"]["text"] = negative_prompt
     
-    # 设置 InstantID 参数（注意：ApplyInstantID 使用 weight 而不是 ip_weight）
+    # 设置 InstantID 参数（使用 ip_weight，与 cinema.py 一致）
     angle_configs = {
-        "9_front": {"weight": ip_weight, "cn_strength": cn_strength},
-        "9_back": {"weight": ip_weight, "cn_strength": cn_strength * 0.8},
-        "9_side": {"weight": ip_weight * 0.85, "cn_strength": cn_strength * 0.5},
-        "9_threequarter": {"weight": ip_weight, "cn_strength": cn_strength},
-        "9_rightfront": {"weight": ip_weight, "cn_strength": cn_strength},
-        "9_top": {"weight": ip_weight * 0.8, "cn_strength": cn_strength * 0.6}
+        "9_front": {"ip_weight": ip_weight, "cn_strength": cn_strength},
+        "9_back": {"ip_weight": ip_weight, "cn_strength": cn_strength * 0.8},
+        "9_side": {"ip_weight": ip_weight * 0.85, "cn_strength": cn_strength * 0.5},
+        "9_threequarter": {"ip_weight": ip_weight, "cn_strength": cn_strength},
+        "9_rightfront": {"ip_weight": ip_weight, "cn_strength": cn_strength},
+        "9_top": {"ip_weight": ip_weight * 0.8, "cn_strength": cn_strength * 0.6}
     }
     for node_id, config in angle_configs.items():
         if node_id in workflow:
-            workflow[node_id]["inputs"]["weight"] = config["weight"]
+            workflow[node_id]["inputs"]["ip_weight"] = config["ip_weight"]
             workflow[node_id]["inputs"]["cn_strength"] = config["cn_strength"]
     
+    # 设置 KSampler 参数
     for node_id in ["11_front", "11_back", "11_side", "11_threequarter", "11_rightfront", "11_top"]:
         if node_id in workflow:
             workflow[node_id]["inputs"]["denoise"] = denoise
             workflow[node_id]["inputs"]["cfg"] = cfg
             workflow[node_id]["inputs"]["steps"] = steps
     
+    # 设置 VAE 色彩校正
     for node_id in ["14_front", "14_back", "14_side", "14_threequarter", "14_rightfront", "14_top"]:
         if node_id in workflow:
             workflow[node_id]["inputs"]["correction_strength"] = correction_strength
     
+    # 设置分辨率
     if "10" in workflow:
         workflow["10"]["inputs"]["width"] = width
         workflow["10"]["inputs"]["height"] = height
@@ -385,18 +392,26 @@ def create_ui():
         def get_params():
             return {
                 "model_name": model_selector.value,
-                "prompt_front": prompt_front.value, "prompt_back": prompt_back.value,
-                "prompt_side": prompt_side.value, "prompt_threequarter": prompt_threequarter.value,
-                "prompt_rightfront": prompt_rightfront.value, "prompt_top": prompt_top.value,
+                "prompt_front": prompt_front.value,
+                "prompt_back": prompt_back.value,
+                "prompt_side": prompt_side.value,
+                "prompt_threequarter": prompt_threequarter.value,
+                "prompt_rightfront": prompt_rightfront.value,
+                "prompt_top": prompt_top.value,
                 "negative_prompt": negative_prompt.value,
-                "ip_weight": ip_weight.value, "cn_strength": cn_strength.value,
-                "denoise": denoise.value, "cfg": cfg.value, "steps": steps.value,
+                "ip_weight": ip_weight.value,
+                "cn_strength": cn_strength.value,
+                "denoise": denoise.value,
+                "cfg": cfg.value,
+                "steps": steps.value,
                 "correction_strength": correction_strength.value,
-                "width": width.value, "height": height.value
+                "width": width.value,
+                "height": height.value
             }
         
         def set_params(params):
-            if not params: return [gr.update()]*16
+            if not params:
+                return [gr.update()] * 16
             return [
                 params.get("model_name", "GhostXL V1.0"),
                 params.get("prompt_front", DEFAULT_PROMPTS["front"]),
@@ -406,9 +421,14 @@ def create_ui():
                 params.get("prompt_rightfront", DEFAULT_PROMPTS["rightfront"]),
                 params.get("prompt_top", DEFAULT_PROMPTS["top"]),
                 params.get("negative_prompt", DEFAULT_NEGATIVE),
-                params.get("ip_weight", 0.85), params.get("cn_strength", 0.45),
-                params.get("denoise", 0.7), params.get("cfg", 6.5), params.get("steps", 28),
-                params.get("correction_strength", 0.5), params.get("width", 1024), params.get("height", 1024)
+                params.get("ip_weight", 0.85),
+                params.get("cn_strength", 0.45),
+                params.get("denoise", 0.7),
+                params.get("cfg", 6.5),
+                params.get("steps", 28),
+                params.get("correction_strength", 0.5),
+                params.get("width", 1024),
+                params.get("height", 1024)
             ]
         
         save_btn.click(lambda n: save_template(n, get_params()), [template_name], [save_status, template_list])
@@ -427,7 +447,6 @@ def create_ui():
         )
     
     return demo
-
 
 def open_browser(url, delay=1.5):
     threading.Timer(delay, lambda: webbrowser.open(url)).start()
