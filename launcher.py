@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 """
 FaceOrbit 启动器 - 选择形象生成模式
+多角度模块：写真模式、二次元模式
+多画风模块：影视明星模式、2.5D多画风模式
 """
 
 import subprocess
@@ -36,7 +38,6 @@ def kill_process_on_port(port):
     """结束占用指定端口的进程"""
     import subprocess
     try:
-        # 查找占用端口的 PID
         result = subprocess.run(
             f'netstat -ano | findstr :{port} | findstr LISTENING',
             shell=True,
@@ -49,7 +50,6 @@ def kill_process_on_port(port):
                 parts = line.split()
                 if len(parts) >= 5:
                     pid = parts[4]
-                    # 结束进程
                     subprocess.run(f'taskkill /PID {pid} /F', shell=True)
                     print(f"✅ 已结束占用端口 {port} 的进程 (PID: {pid})")
                     return True
@@ -75,9 +75,7 @@ def ensure_port_free(port):
 def launch_with_delay(port, script_name, delay=5):
     """启动子进程，等待指定时间后打开浏览器"""
     def _launch():
-        # 先清理端口
         ensure_port_free(port)
-        
         print(f"🚀 正在启动 {script_name}...")
         process = subprocess.Popen([sys.executable, script_name])
         print(f"⏳ 等待 {delay} 秒让服务启动...")
@@ -88,20 +86,26 @@ def launch_with_delay(port, script_name, delay=5):
     threading.Thread(target=_launch, daemon=True).start()
 
 
+# ========== 多角度模式 ==========
 def launch_portrait():
+    """启动写真模式（多角度）"""
     launch_with_delay(7861, "portrait.py")
 
 
 def launch_anime():
+    """启动二次元模式（多角度）"""
     launch_with_delay(7862, "anime.py")
 
 
-def launch_ghostmix():
-    launch_with_delay(7863, "ghostmix.py")
+# ========== 多画风模式 ==========
+def launch_realistic():
+    """启动影视明星/真实感模式（多画风）"""
+    launch_with_delay(7864, "realistic.py")
 
 
-def launch_cinema():
-    launch_with_delay(7864, "cinema.py")
+def launch_scifi():
+    """启动2.5D多画风模式（多画风）"""
+    launch_with_delay(7865, "scifi.py")
 
 
 def create_launcher():
@@ -110,78 +114,99 @@ def create_launcher():
         gr.Markdown("""
         # 🎨 FaceOrbit - AI形象生成器
         
-        ### 选择你的创作风格
+        ### 上传照片，生成属于你的专属形象
+        """)
+        
+        # ========== 多角度模块 ==========
+        gr.Markdown("""
+        ---
+        ## 📐 多角度生成
+        *上传一张照片，生成6个不同角度*
         """)
         
         with gr.Row():
             with gr.Column(scale=1, min_width=250):
                 gr.Markdown("""
-                ## 📸 写真模式
+                ### 📸 写真模式
                 *真实感人像*
                 
                 生成高度逼真的人物肖像
                 - 保留原片质感
                 - 适合证件照/职业照
                 - 自然肤色与细节
+                - ✅ 支持6个角度
                 """)
                 portrait_btn = gr.Button("🎭 进入写真模式", variant="primary", size="lg")
             
             with gr.Column(scale=1, min_width=250):
                 gr.Markdown("""
-                ## 🎨 二次元模式
+                ### 🎨 二次元模式
                 *日系动漫风格*
                 
                 生成动漫角色形象
                 - 30+ 预设角色
                 - 6个角度生成
                 - 支持自定义提示词
+                - ✅ 支持6个角度
                 """)
                 anime_btn = gr.Button("🎭 进入二次元模式", variant="primary", size="lg")
-            
+        
+        # ========== 多画风模块 ==========
+        gr.Markdown("""
+        ---
+        ## 🎨 多画风迁移
+        *上传一张照片，转换为不同艺术风格*
+        """)
+        
+        with gr.Row():
             with gr.Column(scale=1, min_width=250):
                 gr.Markdown("""
-                ## ✨ 立体感动漫
-                *2.5D游戏CG*
+                ### 🎬 真实感画风
+                *摄影/电影质感*
                 
-                生成立体感十足的动漫角色
-                - 游戏角色质感
-                - 更丰富的细节
-                - 适合游戏原画风格
-                """)
-                ghostmix_btn = gr.Button("🎭 进入立体感动漫", variant="primary", size="lg")
-            
-            with gr.Column(scale=1, min_width=250):
-                gr.Markdown("""
-                ## 🎬 影视明星
-                *电影质感*
-                
-                生成电影剧照风格
-                - 好莱坞级光影
+                生成真实感艺术影像
+                - 电影级光影
                 - 胶片质感
-                - 适合演员/模特
+                - 10种预设画风
+                - 🎨 专注画风迁移
                 """)
-                cinema_btn = gr.Button("🎭 进入影视明星", variant="primary", size="lg")
+                realistic_btn = gr.Button("🎭 进入真实感画风", variant="primary", size="lg")
+            
+            with gr.Column(scale=1, min_width=250):
+                gr.Markdown("""
+                ### 🤖 2.5D多画风
+                *赛博朋克/水彩/魔法*
+                
+                生成风格化艺术形象
+                - 赛博朋克/攻壳机动队
+                - 水彩/魔法/摇滚
+                - 10种预设画风
+                - 🎨 专注画风迁移
+                """)
+                scifi_btn = gr.Button("🎭 进入2.5D画风", variant="primary", size="lg")
         
         gr.Markdown("""
         ---
         ### 📌 使用说明
         
-        1. 点击任意模式按钮，将自动启动该模式的 Web 界面
-        2. 每个模式独立运行在不同端口：
-           - 写真模式：7861
-           - 二次元模式：7862
-           - 立体感动漫：7863
-           - 影视明星：7864
-        3. 首次启动需要等待 5-10 秒，浏览器会自动打开
-        4. 请确保 ComfyUI 已启动（http://127.0.0.1:8188）
-        5. 如果端口被占用，程序会自动清理
+        | 模块 | 模式 | 端口 | 输出 | 说明 |
+        |------|------|------|------|------|
+        | **多角度** | 写真模式 | 7861 | 6张 | 真实感人像，6个角度 |
+        | **多角度** | 二次元模式 | 7862 | 6张 | 日系动漫，6个角度 |
+        | **多画风** | 真实感画风 | 7864 | 1张 | 摄影/电影质感，画风迁移 |
+        | **多画风** | 2.5D画风 | 7865 | 1张 | 赛博朋克/水彩等，画风迁移 |
+        
+        > 💡 **提示**：
+        > - 多角度模式：适合需要展示同一人物不同角度的场景
+        > - 多画风模式：单张输出，适合探索不同艺术风格
+        > - 请确保 ComfyUI 已启动（http://127.0.0.1:8188）
         """)
         
         # 按钮事件
         portrait_btn.click(fn=launch_portrait, inputs=[], outputs=[])
         anime_btn.click(fn=launch_anime, inputs=[], outputs=[])
-        ghostmix_btn.click(fn=launch_ghostmix, inputs=[], outputs=[])
-        cinema_btn.click(fn=launch_cinema, inputs=[], outputs=[])
+        realistic_btn.click(fn=launch_realistic, inputs=[], outputs=[])
+        scifi_btn.click(fn=launch_scifi, inputs=[], outputs=[])
     
     return demo
 
@@ -191,8 +216,8 @@ def open_browser(url, delay=1.5):
 
 
 if __name__ == "__main__":
-    # 启动前先清理所有可能被占用的端口
-    for port in [7861, 7862, 7863, 7864]:
+    # 启动前检查所有端口
+    for port in [7861, 7862, 7864, 7865]:
         ensure_port_free(port)
     
     demo = create_launcher()
@@ -200,8 +225,14 @@ if __name__ == "__main__":
     
     print(f"🚀 正在启动 FaceOrbit 启动器...")
     print(f"📍 启动器地址: {local_url}")
-    print(f"📌 请选择要进入的形象生成模式")
-    print(f"💡 提示：点击按钮后请等待 5-10 秒，浏览器会自动打开对应页面")
+    print(f"📌 ========== 模式说明 ==========")
+    print(f"📐 多角度模块：")
+    print(f"   - 写真模式 (端口 7861)：真实感人像，6角度")
+    print(f"   - 二次元模式 (端口 7862)：日系动漫，6角度")
+    print(f"🎨 多画风模块：")
+    print(f"   - 真实感画风 (端口 7864)：摄影/电影质感，单张")
+    print(f"   - 2.5D画风 (端口 7865)：赛博朋克/水彩等，单张")
+    print(f"=================================")
     
     open_browser(local_url)
     

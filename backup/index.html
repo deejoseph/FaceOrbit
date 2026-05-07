@@ -47,22 +47,63 @@
         <label for="mode">模式预设</label>
         <select id="mode"></select>
 
-        <!-- 单图上传区 -->
-        <div class="single-upload-area">
-          <label for="imageUpload">上传参考图</label>
-          <input type="file" id="imageUpload" accept="image/*">
-          <div id="uploadPreview" class="upload-preview"></div>
-          <div id="uploadEmpty" class="empty-state">尚未选择图像</div>
-        </div>
-        <p class="hint">请上传一张清晰、背景简洁的正面参考图。</p>
+        <!-- 多图上传区 -->
+        <div class="multi-upload-area">
+          <label class="section-label">参考图上传</label>
+          <p class="hint">正面图为必填，其他角度可选。补充越多角度，侧面和背面的一致性越好。</p>
 
-        <div class="action-row">
-          <button id="generateButton" type="button">完整生成（全部视角）</button>
-          <button id="resetViews" type="button" class="ghost">恢复预设</button>
-        </div>
-        <p class="hint" style="margin-top: 8px; color: #6a756f;">💡 提示：如需单独调整某个视角，请在下方的「多视图控制」区域使用各自的「单独生成」按钮。</p>
+          <div class="upload-grid">
+            <div class="upload-slot required">
+              <div class="slot-header">
+                <span class="slot-name">📷 正面图</span>
+                <span class="required-badge">必填</span>
+              </div>
+              <input type="file" class="image-upload" data-slot="front" accept="image/*">
+              <div class="upload-preview" id="preview_front"></div>
+              <div class="upload-empty preview-placeholder">尚未选择</div>
+            </div>
 
-        <div id="statusBox" class="status-box status-idle">等待任务</div>
+            <div class="upload-slot">
+              <div class="slot-header">
+                <span class="slot-name">↖️ 左前图</span>
+                <span class="optional-badge">可选</span>
+              </div>
+              <input type="file" class="image-upload" data-slot="leftfront" accept="image/*">
+              <div class="upload-preview" id="preview_leftfront"></div>
+              <div class="upload-empty preview-placeholder">尚未选择</div>
+            </div>
+
+            <div class="upload-slot">
+              <div class="slot-header">
+                <span class="slot-name">↗️ 右前图</span>
+                <span class="optional-badge">可选</span>
+              </div>
+              <input type="file" class="image-upload" data-slot="rightfront" accept="image/*">
+              <div class="upload-preview" id="preview_rightfront"></div>
+              <div class="upload-empty preview-placeholder">尚未选择</div>
+            </div>
+
+            <div class="upload-slot">
+              <div class="slot-header">
+                <span class="slot-name">➡️ 侧面图</span>
+                <span class="optional-badge">可选</span>
+              </div>
+              <input type="file" class="image-upload" data-slot="side" accept="image/*">
+              <div class="upload-preview" id="preview_side"></div>
+              <div class="upload-empty preview-placeholder">尚未选择</div>
+            </div>
+
+            <div class="upload-slot">
+              <div class="slot-header">
+                <span class="slot-name">🔙 背面图</span>
+                <span class="optional-badge">可选</span>
+              </div>
+              <input type="file" class="image-upload" data-slot="back" accept="image/*">
+              <div class="upload-preview" id="preview_back"></div>
+              <div class="upload-empty preview-placeholder">尚未选择</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="card">
