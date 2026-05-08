@@ -1,6 +1,3 @@
-好的，以下是修正后格式正确的 `README.md`：
-
-```markdown
 # FaceOrbit - AI 人像生成系统
 
 <div align="center">
@@ -231,4 +228,3 @@ MIT License
 ---
 
 *最后更新：2026-01-15*
-```
