@@ -7,14 +7,14 @@
   "2": {
     "inputs": {
       "lora_name": "qwen-image-edit-2511-multiple-angles-lora.safetensors",
-      "strength_model": 0.8,
+      "strength_model": 0.6,
       "model": ["1", 0]
     },
     "class_type": "LoraLoaderModelOnly",
     "_meta": {"title": "多角度 LoRA"}
   },
   "3": {
-    "inputs": {"image": "身份.jpg"},
+    "inputs": {"image": "face13.webp"},
     "class_type": "LoadImage",
     "_meta": {"title": "身份参考图"}
   },
@@ -33,9 +33,31 @@
     "class_type": "ControlNetLoader",
     "_meta": {"title": "ControlNet"}
   },
+  "8": {
+    "inputs": {
+      "text": "worst quality, low quality, illustration, 3d, 2d, painting, cartoons, sketch, blurry, noisy, distorted, deformed, ugly, watermark, asymmetrical, tilted, crooked, out of frame, two heads, double head, multiple faces, extra head, clone, multiple people",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "负向提示词"}
+  },
+  "10": {
+    "inputs": {
+      "width": 896,
+      "height": 1152,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {"title": "潜空间"}
+  },
+  "12": {
+    "inputs": {"vae_name": "sdxl_vae.safetensors"},
+    "class_type": "VAELoader",
+    "_meta": {"title": "VAE加载器"}
+  },
   "7_front": {
     "inputs": {
-      "text": "a photo of a man, wearing a plain dark t-shirt, head and shoulders portrait, plain white background, high resolution, front view, looking at camera",
+      "text": "upper body photo, a person, natural skin, looks at viewer, studio lighting, high resolution, realistic, 8k, sharp focus, plain background, front view, single person",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
@@ -43,7 +65,7 @@
   },
   "7_back": {
     "inputs": {
-      "text": "a photo of a man, wearing a plain dark t-shirt, back of head view, shoulders and back, looking away from camera, plain white background, high resolution",
+      "text": "upper body photo, a person, back view, looking away, natural lighting, high resolution, realistic, plain background, single person",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
@@ -51,7 +73,7 @@
   },
   "7_side": {
     "inputs": {
-      "text": "a photo of a man, wearing a plain dark t-shirt, side view, profile shot, facing left, plain white background, high resolution",
+      "text": "upper body photo, a person, side view, profile shot, facing left, natural lighting, high resolution, realistic, plain background, single person",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
@@ -59,7 +81,7 @@
   },
   "7_top": {
     "inputs": {
-      "text": "a photo of a man, wearing a plain dark t-shirt, top down view, bird's eye view, looking up, plain white background, high resolution",
+      "text": "upper body photo, a person, top down view, bird's eye view, looking up, natural lighting, high resolution, realistic, plain background, single person",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
@@ -67,7 +89,7 @@
   },
   "7_threequarter": {
     "inputs": {
-      "text": "a photo of a man, wearing a plain dark t-shirt, three quarter view, turned slightly right, plain white background, high resolution",
+      "text": "upper body photo, a person, three quarter view, turned slightly, looking at camera, natural lighting, high resolution, realistic, plain background, single person",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
@@ -75,24 +97,16 @@
   },
   "7_rightfront": {
     "inputs": {
-      "text": "a photo of a man, wearing a plain dark t-shirt, right front view, facing right, plain white background, high resolution",
+      "text": "upper body photo, a person, right side view, facing right, natural lighting, high resolution, realistic, plain background, single person",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
     "_meta": {"title": "正向提示词-右前"}
   },
-  "8": {
-    "inputs": {
-      "text": "worst quality, low quality, blurry, noisy, distorted, deformed, ugly, watermark, asymmetrical, tilted, crooked, out of frame",
-      "clip": ["1", 1]
-    },
-    "class_type": "CLIPTextEncode",
-    "_meta": {"title": "负向提示词(共用)"}
-  },
   "9_front": {
     "inputs": {
-      "ip_weight": 0.92,
-      "cn_strength": 0.5,
+      "ip_weight": 0.88,
+      "cn_strength": 0.65,
       "start_at": 0,
       "end_at": 0.82,
       "noise": 0,
@@ -110,10 +124,10 @@
   },
   "9_back": {
     "inputs": {
-      "ip_weight": 0.92,
-      "cn_strength": 0.5,
+      "ip_weight": 0.88,
+      "cn_strength": 0.6,
       "start_at": 0,
-      "end_at": 0.82,
+      "end_at": 0.8,
       "noise": 0,
       "combine_embeds": "average",
       "instantid": ["4", 0],
@@ -129,10 +143,10 @@
   },
   "9_side": {
     "inputs": {
-      "ip_weight": 0.92,
-      "cn_strength": 0.5,
+      "ip_weight": 0.82,
+      "cn_strength": 0.55,
       "start_at": 0,
-      "end_at": 0.82,
+      "end_at": 0.75,
       "noise": 0,
       "combine_embeds": "average",
       "instantid": ["4", 0],
@@ -148,11 +162,11 @@
   },
   "9_top": {
     "inputs": {
-      "ip_weight": 0.92,
-      "cn_strength": 0.5,
+      "ip_weight": 0.8,
+      "cn_strength": 0.45,
       "start_at": 0,
-      "end_at": 0.82,
-      "noise": 0,
+      "end_at": 0.75,
+      "noise": 0.05,
       "combine_embeds": "average",
       "instantid": ["4", 0],
       "insightface": ["5", 0],
@@ -167,10 +181,10 @@
   },
   "9_threequarter": {
     "inputs": {
-      "ip_weight": 0.92,
-      "cn_strength": 0.5,
+      "ip_weight": 0.86,
+      "cn_strength": 0.6,
       "start_at": 0,
-      "end_at": 0.82,
+      "end_at": 0.78,
       "noise": 0,
       "combine_embeds": "average",
       "instantid": ["4", 0],
@@ -186,10 +200,10 @@
   },
   "9_rightfront": {
     "inputs": {
-      "ip_weight": 0.92,
-      "cn_strength": 0.5,
+      "ip_weight": 0.84,
+      "cn_strength": 0.58,
       "start_at": 0,
-      "end_at": 0.82,
+      "end_at": 0.76,
       "noise": 0,
       "combine_embeds": "average",
       "instantid": ["4", 0],
@@ -203,19 +217,14 @@
     "class_type": "ApplyInstantIDAdvanced",
     "_meta": {"title": "InstantID-右前"}
   },
-  "10": {
-    "inputs": {"width": 896, "height": 1152, "batch_size": 1},
-    "class_type": "EmptyLatentImage",
-    "_meta": {"title": "潜空间(共用)"}
-  },
   "11_front": {
     "inputs": {
       "seed": 42,
       "steps": 30,
-      "cfg": 3,
-      "sampler_name": "euler",
+      "cfg": 7,
+      "sampler_name": "dpmpp_2m",
       "scheduler": "karras",
-      "denoise": 0.73,
+      "denoise": 0.48,
       "model": ["9_front", 0],
       "positive": ["9_front", 1],
       "negative": ["9_front", 2],
@@ -228,10 +237,10 @@
     "inputs": {
       "seed": 43,
       "steps": 30,
-      "cfg": 3,
-      "sampler_name": "euler",
+      "cfg": 7,
+      "sampler_name": "dpmpp_2m",
       "scheduler": "karras",
-      "denoise": 0.73,
+      "denoise": 0.48,
       "model": ["9_back", 0],
       "positive": ["9_back", 1],
       "negative": ["9_back", 2],
@@ -244,10 +253,10 @@
     "inputs": {
       "seed": 44,
       "steps": 30,
-      "cfg": 3,
-      "sampler_name": "euler",
+      "cfg": 7,
+      "sampler_name": "dpmpp_2m",
       "scheduler": "karras",
-      "denoise": 0.73,
+      "denoise": 0.48,
       "model": ["9_side", 0],
       "positive": ["9_side", 1],
       "negative": ["9_side", 2],
@@ -260,10 +269,10 @@
     "inputs": {
       "seed": 45,
       "steps": 30,
-      "cfg": 3,
-      "sampler_name": "euler",
+      "cfg": 7,
+      "sampler_name": "dpmpp_2m",
       "scheduler": "karras",
-      "denoise": 0.73,
+      "denoise": 0.48,
       "model": ["9_top", 0],
       "positive": ["9_top", 1],
       "negative": ["9_top", 2],
@@ -276,10 +285,10 @@
     "inputs": {
       "seed": 46,
       "steps": 30,
-      "cfg": 3,
-      "sampler_name": "euler",
+      "cfg": 7,
+      "sampler_name": "dpmpp_2m",
       "scheduler": "karras",
-      "denoise": 0.73,
+      "denoise": 0.48,
       "model": ["9_threequarter", 0],
       "positive": ["9_threequarter", 1],
       "negative": ["9_threequarter", 2],
@@ -292,10 +301,10 @@
     "inputs": {
       "seed": 47,
       "steps": 30,
-      "cfg": 3,
-      "sampler_name": "euler",
+      "cfg": 7,
+      "sampler_name": "dpmpp_2m",
       "scheduler": "karras",
-      "denoise": 0.73,
+      "denoise": 0.48,
       "model": ["9_rightfront", 0],
       "positive": ["9_rightfront", 1],
       "negative": ["9_rightfront", 2],
@@ -303,11 +312,6 @@
     },
     "class_type": "KSampler",
     "_meta": {"title": "采样器-右前"}
-  },
-  "12": {
-    "inputs": {"vae_name": "sdxl_vae.safetensors"},
-    "class_type": "VAELoader",
-    "_meta": {"title": "VAE加载器"}
   },
   "13_front": {
     "inputs": {"samples": ["11_front", 0], "vae": ["12", 0]},
@@ -339,111 +343,33 @@
     "class_type": "VAEDecode",
     "_meta": {"title": "VAE解码-右前"}
   },
-  "14_front": {
-    "inputs": {
-      "correction_strength": 0.6,
-      "method": "luminance_zones",
-      "auto_preserve": true,
-      "lock_input_image": false,
-      "edge_feather": 5,
-      "original_image": ["3", 0],
-      "processed_image": ["13_front", 0]
-    },
-    "class_type": "VAEColorCorrector",
-    "_meta": {"title": "VAE色彩校正-正面"}
-  },
-  "14_back": {
-    "inputs": {
-      "correction_strength": 0.6,
-      "method": "luminance_zones",
-      "auto_preserve": true,
-      "lock_input_image": false,
-      "edge_feather": 5,
-      "original_image": ["3", 0],
-      "processed_image": ["13_back", 0]
-    },
-    "class_type": "VAEColorCorrector",
-    "_meta": {"title": "VAE色彩校正-背面"}
-  },
-  "14_side": {
-    "inputs": {
-      "correction_strength": 0.6,
-      "method": "luminance_zones",
-      "auto_preserve": true,
-      "lock_input_image": false,
-      "edge_feather": 5,
-      "original_image": ["3", 0],
-      "processed_image": ["13_side", 0]
-    },
-    "class_type": "VAEColorCorrector",
-    "_meta": {"title": "VAE色彩校正-侧面"}
-  },
-  "14_top": {
-    "inputs": {
-      "correction_strength": 0.6,
-      "method": "luminance_zones",
-      "auto_preserve": true,
-      "lock_input_image": false,
-      "edge_feather": 5,
-      "original_image": ["3", 0],
-      "processed_image": ["13_top", 0]
-    },
-    "class_type": "VAEColorCorrector",
-    "_meta": {"title": "VAE色彩校正-顶视"}
-  },
-  "14_threequarter": {
-    "inputs": {
-      "correction_strength": 0.6,
-      "method": "luminance_zones",
-      "auto_preserve": true,
-      "lock_input_image": false,
-      "edge_feather": 5,
-      "original_image": ["3", 0],
-      "processed_image": ["13_threequarter", 0]
-    },
-    "class_type": "VAEColorCorrector",
-    "_meta": {"title": "VAE色彩校正-四分之三"}
-  },
-  "14_rightfront": {
-    "inputs": {
-      "correction_strength": 0.6,
-      "method": "luminance_zones",
-      "auto_preserve": true,
-      "lock_input_image": false,
-      "edge_feather": 5,
-      "original_image": ["3", 0],
-      "processed_image": ["13_rightfront", 0]
-    },
-    "class_type": "VAEColorCorrector",
-    "_meta": {"title": "VAE色彩校正-右前"}
-  },
   "15_front": {
-    "inputs": {"filename_prefix": "InstantID_front", "images": ["14_front", 0]},
+    "inputs": {"filename_prefix": "portrait_front", "images": ["13_front", 0]},
     "class_type": "SaveImage",
     "_meta": {"title": "保存-正面"}
   },
   "15_back": {
-    "inputs": {"filename_prefix": "InstantID_back", "images": ["14_back", 0]},
+    "inputs": {"filename_prefix": "portrait_back", "images": ["13_back", 0]},
     "class_type": "SaveImage",
     "_meta": {"title": "保存-背面"}
   },
   "15_side": {
-    "inputs": {"filename_prefix": "InstantID_side", "images": ["14_side", 0]},
+    "inputs": {"filename_prefix": "portrait_side", "images": ["13_side", 0]},
     "class_type": "SaveImage",
     "_meta": {"title": "保存-侧面"}
   },
   "15_top": {
-    "inputs": {"filename_prefix": "InstantID_top", "images": ["14_top", 0]},
+    "inputs": {"filename_prefix": "portrait_top", "images": ["13_top", 0]},
     "class_type": "SaveImage",
     "_meta": {"title": "保存-顶视"}
   },
   "15_threequarter": {
-    "inputs": {"filename_prefix": "InstantID_threequarter", "images": ["14_threequarter", 0]},
+    "inputs": {"filename_prefix": "portrait_threequarter", "images": ["13_threequarter", 0]},
     "class_type": "SaveImage",
     "_meta": {"title": "保存-四分之三"}
   },
   "15_rightfront": {
-    "inputs": {"filename_prefix": "InstantID_rightfront", "images": ["14_rightfront", 0]},
+    "inputs": {"filename_prefix": "portrait_rightfront", "images": ["13_rightfront", 0]},
     "class_type": "SaveImage",
     "_meta": {"title": "保存-右前"}
   }

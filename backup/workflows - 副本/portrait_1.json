@@ -1,0 +1,833 @@
+{
+  "1": {
+    "inputs": {
+      "ckpt_name": "realvisxlV50_v50LightningBakedvae.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Model - RealVisXL"
+    }
+  },
+  "2": {
+    "inputs": {
+      "lora_name": "qwen-image-edit-2511-multiple-angles-lora.safetensors",
+      "strength_model": 0.65,
+      "model": [
+        "1",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "Multi-angle LoRA"
+    }
+  },
+  "3": {
+    "inputs": {
+      "image": "face13.webp"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Identity Reference"
+    }
+  },
+  "4": {
+    "inputs": {
+      "instantid_file": "ip-adapter.bin"
+    },
+    "class_type": "InstantIDModelLoader",
+    "_meta": {
+      "title": "InstantID Model"
+    }
+  },
+  "5": {
+    "inputs": {
+      "provider": "CUDA"
+    },
+    "class_type": "InstantIDFaceAnalysis",
+    "_meta": {
+      "title": "Face Analysis"
+    }
+  },
+  "6": {
+    "inputs": {
+      "control_net_name": "diffusion_pytorch_model.safetensors"
+    },
+    "class_type": "ControlNetLoader",
+    "_meta": {
+      "title": "InstantID ControlNet"
+    }
+  },
+  "8": {
+    "inputs": {
+      "text": "worst quality, low quality, normal quality, lowres, jpeg artifacts, blurry, noisy, soft focus, distorted, deformed, ugly, bad anatomy, bad hands, bad fingers, missing fingers, extra fingers, asymmetrical, tilted, crooked, out of frame, cropped head, two heads, double head, multiple faces, extra head, clone, multiple people, watermark, text, signature, illustration, 3d, 2d, painting, cartoon, sketch, dark, underexposed, low contrast, gray skin, dull color, muddy colors, harsh shadow",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Negative Prompt"
+    }
+  },
+  "10_front": {
+    "inputs": {
+      "width": 896,
+      "height": 1152,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Latent - Front"
+    }
+  },
+  "10_back": {
+    "inputs": {
+      "width": 896,
+      "height": 1152,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Latent - Back"
+    }
+  },
+  "10_left": {
+    "inputs": {
+      "width": 896,
+      "height": 1152,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Latent - Left Profile"
+    }
+  },
+  "10_right": {
+    "inputs": {
+      "width": 896,
+      "height": 1152,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Latent - Right Profile"
+    }
+  },
+  "10_threequarter_left": {
+    "inputs": {
+      "width": 896,
+      "height": 1152,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Latent - Three Quarter Left"
+    }
+  },
+  "10_threequarter_right": {
+    "inputs": {
+      "width": 896,
+      "height": 1152,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Latent - Three Quarter Right"
+    }
+  },
+  "12": {
+    "inputs": {
+      "vae_name": "sdxl_vae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "VAE"
+    }
+  },
+  "7_front": {
+    "inputs": {
+      "text": "realistic full body portrait photo, single adult person, standing upright, front view, facing camera, both eyes visible, symmetrical body, natural skin texture, bright soft studio lighting, balanced exposure, clean realistic color, sharp focus, high resolution, plain light background",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Prompt - Front"
+    }
+  },
+  "7_back": {
+    "inputs": {
+      "text": "realistic full body portrait photo, single adult person, standing upright, back view, facing away from camera, back of head visible, no face visible, natural skin texture, bright soft studio lighting, balanced exposure, clean realistic color, sharp focus, high resolution, plain light background",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Prompt - Back"
+    }
+  },
+  "7_left": {
+    "inputs": {
+      "text": "realistic full body portrait photo, single adult person, standing upright, strict left side profile view, body turned 90 degrees to the left, one eye visible, nose profile visible, looking left, natural skin texture, bright soft studio lighting, balanced exposure, clean realistic color, sharp focus, high resolution, plain light background",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Prompt - Left Profile"
+    }
+  },
+  "7_right": {
+    "inputs": {
+      "text": "realistic full body portrait photo, single adult person, standing upright, strict right side profile view, body turned 90 degrees to the right, one eye visible, nose profile visible, looking right, natural skin texture, bright soft studio lighting, balanced exposure, clean realistic color, sharp focus, high resolution, plain light background",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Prompt - Right Profile"
+    }
+  },
+  "7_threequarter_left": {
+    "inputs": {
+      "text": "realistic full body portrait photo, single adult person, standing upright, three quarter left view, body turned 45 degrees to the left, head turned slightly toward camera, natural skin texture, bright soft studio lighting, balanced exposure, clean realistic color, sharp focus, high resolution, plain light background",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Prompt - Three Quarter Left"
+    }
+  },
+  "7_threequarter_right": {
+    "inputs": {
+      "text": "realistic full body portrait photo, single adult person, standing upright, three quarter right view, body turned 45 degrees to the right, head turned slightly toward camera, natural skin texture, bright soft studio lighting, balanced exposure, clean realistic color, sharp focus, high resolution, plain light background",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Prompt - Three Quarter Right"
+    }
+  },
+  "9_front": {
+    "inputs": {
+      "ip_weight": 0.88,
+      "cn_strength": 0.62,
+      "start_at": 0,
+      "end_at": 0.78,
+      "noise": 0,
+      "combine_embeds": "average",
+      "instantid": [
+        "4",
+        0
+      ],
+      "insightface": [
+        "5",
+        0
+      ],
+      "control_net": [
+        "6",
+        0
+      ],
+      "image": [
+        "3",
+        0
+      ],
+      "model": [
+        "2",
+        0
+      ],
+      "positive": [
+        "7_front",
+        0
+      ],
+      "negative": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {
+      "title": "InstantID - Front"
+    }
+  },
+  "9_back": {
+    "inputs": {
+      "ip_weight": 0.72,
+      "cn_strength": 0.42,
+      "start_at": 0,
+      "end_at": 0.62,
+      "noise": 0.04,
+      "combine_embeds": "average",
+      "instantid": [
+        "4",
+        0
+      ],
+      "insightface": [
+        "5",
+        0
+      ],
+      "control_net": [
+        "6",
+        0
+      ],
+      "image": [
+        "3",
+        0
+      ],
+      "model": [
+        "2",
+        0
+      ],
+      "positive": [
+        "7_back",
+        0
+      ],
+      "negative": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {
+      "title": "InstantID - Back"
+    }
+  },
+  "9_left": {
+    "inputs": {
+      "ip_weight": 0.8,
+      "cn_strength": 0.46,
+      "start_at": 0,
+      "end_at": 0.68,
+      "noise": 0.02,
+      "combine_embeds": "average",
+      "instantid": [
+        "4",
+        0
+      ],
+      "insightface": [
+        "5",
+        0
+      ],
+      "control_net": [
+        "6",
+        0
+      ],
+      "image": [
+        "3",
+        0
+      ],
+      "model": [
+        "2",
+        0
+      ],
+      "positive": [
+        "7_left",
+        0
+      ],
+      "negative": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {
+      "title": "InstantID - Left Profile"
+    }
+  },
+  "9_right": {
+    "inputs": {
+      "ip_weight": 0.8,
+      "cn_strength": 0.46,
+      "start_at": 0,
+      "end_at": 0.68,
+      "noise": 0.02,
+      "combine_embeds": "average",
+      "instantid": [
+        "4",
+        0
+      ],
+      "insightface": [
+        "5",
+        0
+      ],
+      "control_net": [
+        "6",
+        0
+      ],
+      "image": [
+        "3",
+        0
+      ],
+      "model": [
+        "2",
+        0
+      ],
+      "positive": [
+        "7_right",
+        0
+      ],
+      "negative": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {
+      "title": "InstantID - Right Profile"
+    }
+  },
+  "9_threequarter_left": {
+    "inputs": {
+      "ip_weight": 0.84,
+      "cn_strength": 0.54,
+      "start_at": 0,
+      "end_at": 0.72,
+      "noise": 0,
+      "combine_embeds": "average",
+      "instantid": [
+        "4",
+        0
+      ],
+      "insightface": [
+        "5",
+        0
+      ],
+      "control_net": [
+        "6",
+        0
+      ],
+      "image": [
+        "3",
+        0
+      ],
+      "model": [
+        "2",
+        0
+      ],
+      "positive": [
+        "7_threequarter_left",
+        0
+      ],
+      "negative": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {
+      "title": "InstantID - Three Quarter Left"
+    }
+  },
+  "9_threequarter_right": {
+    "inputs": {
+      "ip_weight": 0.84,
+      "cn_strength": 0.54,
+      "start_at": 0,
+      "end_at": 0.72,
+      "noise": 0,
+      "combine_embeds": "average",
+      "instantid": [
+        "4",
+        0
+      ],
+      "insightface": [
+        "5",
+        0
+      ],
+      "control_net": [
+        "6",
+        0
+      ],
+      "image": [
+        "3",
+        0
+      ],
+      "model": [
+        "2",
+        0
+      ],
+      "positive": [
+        "7_threequarter_right",
+        0
+      ],
+      "negative": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {
+      "title": "InstantID - Three Quarter Right"
+    }
+  },
+  "11_front": {
+    "inputs": {
+      "seed": 788740208168197,
+      "steps": 32,
+      "cfg": 6.5,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.48,
+      "model": [
+        "9_front",
+        0
+      ],
+      "positive": [
+        "9_front",
+        1
+      ],
+      "negative": [
+        "9_front",
+        2
+      ],
+      "latent_image": [
+        "10_front",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "Sampler - Front"
+    }
+  },
+  "11_back": {
+    "inputs": {
+      "seed": 890966738042580,
+      "steps": 32,
+      "cfg": 6.8,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.52,
+      "model": [
+        "9_back",
+        0
+      ],
+      "positive": [
+        "9_back",
+        1
+      ],
+      "negative": [
+        "9_back",
+        2
+      ],
+      "latent_image": [
+        "10_back",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "Sampler - Back"
+    }
+  },
+  "11_left": {
+    "inputs": {
+      "seed": 650710759051678,
+      "steps": 32,
+      "cfg": 6.8,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.5,
+      "model": [
+        "9_left",
+        0
+      ],
+      "positive": [
+        "9_left",
+        1
+      ],
+      "negative": [
+        "9_left",
+        2
+      ],
+      "latent_image": [
+        "10_left",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "Sampler - Left Profile"
+    }
+  },
+  "11_right": {
+    "inputs": {
+      "seed": 295933748614006,
+      "steps": 32,
+      "cfg": 6.8,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.5,
+      "model": [
+        "9_right",
+        0
+      ],
+      "positive": [
+        "9_right",
+        1
+      ],
+      "negative": [
+        "9_right",
+        2
+      ],
+      "latent_image": [
+        "10_right",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "Sampler - Right Profile"
+    }
+  },
+  "11_threequarter_left": {
+    "inputs": {
+      "seed": 650233343777670,
+      "steps": 32,
+      "cfg": 6.5,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.48,
+      "model": [
+        "9_threequarter_left",
+        0
+      ],
+      "positive": [
+        "9_threequarter_left",
+        1
+      ],
+      "negative": [
+        "9_threequarter_left",
+        2
+      ],
+      "latent_image": [
+        "10_threequarter_left",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "Sampler - Three Quarter Left"
+    }
+  },
+  "11_threequarter_right": {
+    "inputs": {
+      "seed": 227305622798855,
+      "steps": 32,
+      "cfg": 6.5,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.48,
+      "model": [
+        "9_threequarter_right",
+        0
+      ],
+      "positive": [
+        "9_threequarter_right",
+        1
+      ],
+      "negative": [
+        "9_threequarter_right",
+        2
+      ],
+      "latent_image": [
+        "10_threequarter_right",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "Sampler - Three Quarter Right"
+    }
+  },
+  "13_front": {
+    "inputs": {
+      "samples": [
+        "11_front",
+        0
+      ],
+      "vae": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Decode - Front"
+    }
+  },
+  "13_back": {
+    "inputs": {
+      "samples": [
+        "11_back",
+        0
+      ],
+      "vae": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Decode - Back"
+    }
+  },
+  "13_left": {
+    "inputs": {
+      "samples": [
+        "11_left",
+        0
+      ],
+      "vae": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Decode - Left Profile"
+    }
+  },
+  "13_right": {
+    "inputs": {
+      "samples": [
+        "11_right",
+        0
+      ],
+      "vae": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Decode - Right Profile"
+    }
+  },
+  "13_threequarter_left": {
+    "inputs": {
+      "samples": [
+        "11_threequarter_left",
+        0
+      ],
+      "vae": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Decode - Three Quarter Left"
+    }
+  },
+  "13_threequarter_right": {
+    "inputs": {
+      "samples": [
+        "11_threequarter_right",
+        0
+      ],
+      "vae": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Decode - Three Quarter Right"
+    }
+  },
+  "15_front": {
+    "inputs": {
+      "filename_prefix": "portrait_1_front",
+      "images": [
+        "13_front",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save - Front"
+    }
+  },
+  "15_back": {
+    "inputs": {
+      "filename_prefix": "portrait_1_back",
+      "images": [
+        "13_back",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save - Back"
+    }
+  },
+  "15_left": {
+    "inputs": {
+      "filename_prefix": "portrait_1_left_profile",
+      "images": [
+        "13_left",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save - Left Profile"
+    }
+  },
+  "15_right": {
+    "inputs": {
+      "filename_prefix": "portrait_1_right_profile",
+      "images": [
+        "13_right",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save - Right Profile"
+    }
+  },
+  "15_threequarter_left": {
+    "inputs": {
+      "filename_prefix": "portrait_1_threequarter_left",
+      "images": [
+        "13_threequarter_left",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save - Three Quarter Left"
+    }
+  },
+  "15_threequarter_right": {
+    "inputs": {
+      "filename_prefix": "portrait_1_threequarter_right",
+      "images": [
+        "13_threequarter_right",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save - Three Quarter Right"
+    }
+  }
+}

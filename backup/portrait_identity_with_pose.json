@@ -1,0 +1,230 @@
+{
+  "1": {
+    "inputs": {"ckpt_name": "RealVisXL_V5.0_fp16.safetensors"},
+    "class_type": "CheckpointLoaderSimple"
+  },
+  "3": {
+    "inputs": {"image": "face13.webp"},
+    "class_type": "LoadImage"
+  },
+  "4": {
+    "inputs": {"instantid_file": "ip-adapter.bin"},
+    "class_type": "InstantIDModelLoader"
+  },
+  "5": {
+    "inputs": {"provider": "CUDA"},
+    "class_type": "InstantIDFaceAnalysis"
+  },
+  "6": {
+    "inputs": {"control_net_name": "diffusion_pytorch_model.safetensors"},
+    "class_type": "ControlNetLoader"
+  },
+  "8": {
+    "inputs": {
+      "text": "worst quality, low quality, normal quality, lowres, jpeg artifacts, blurry, noisy, soft focus, distorted, deformed, ugly, bad anatomy, bad hands, asymmetrical face, out of frame, cropped head, two heads, double head, multiple faces, extra head, clone, multiple people, watermark, text, signature, illustration, 3d, 2d, painting, cartoon, sketch, dark, underexposed, low contrast, gray skin, dull color, muddy colors, flat lighting, haze, foggy, washed out, gender swap, wrong gender, different person, different face",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "12": {
+    "inputs": {"vae_name": "sdxl_vae.safetensors"},
+    "class_type": "VAELoader"
+  },
+  "20": {
+    "inputs": {"pixels": ["3", 0], "vae": ["12", 0]},
+    "class_type": "VAEEncode"
+  },
+  "7_front": {
+    "inputs": {
+      "text": "full body photo, same person, front view, facing camera, standing, plain white background, studio lighting, high quality, realistic, sharp focus, same face, same hairstyle, same clothing",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "7_back": {
+    "inputs": {
+      "text": "full body photo, same person, back view, facing away, standing, plain white background, studio lighting, high quality, realistic, same hairstyle, same clothing",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "7_left": {
+    "inputs": {
+      "text": "full body photo, same person, left three quarter view, turned left, standing, plain white background, studio lighting, high quality, realistic, same face, same hairstyle, same clothing",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "7_right": {
+    "inputs": {
+      "text": "full body photo, same person, right three quarter view, turned right, standing, plain white background, studio lighting, high quality, realistic, same face, same hairstyle, same clothing",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "7_side": {
+    "inputs": {
+      "text": "full body photo, same person, strict side profile, standing, plain white background, studio lighting, high quality, realistic, same hairstyle, same body type",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "7_top": {
+    "inputs": {
+      "text": "portrait photo, same person, top down view, looking up, plain white background, studio lighting, high quality, realistic, same face, same hairstyle",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "9_front": {
+    "inputs": {
+      "ip_weight": 0.88,
+      "cn_strength": 0.35,
+      "start_at": 0,
+      "end_at": 0.8,
+      "noise": 0,
+      "combine_embeds": "average",
+      "instantid": ["4", 0],
+      "insightface": ["5", 0],
+      "control_net": ["6", 0],
+      "image": ["3", 0],
+      "model": ["1", 0],
+      "positive": ["7_front", 0],
+      "negative": ["8", 0],
+      "image_kps": ["30_front_kps", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced"
+  },
+  "9_back": {
+    "inputs": {
+      "ip_weight": 0.85,
+      "cn_strength": 0.3,
+      "start_at": 0,
+      "end_at": 0.78,
+      "noise": 0.05,
+      "combine_embeds": "average",
+      "instantid": ["4", 0],
+      "insightface": ["5", 0],
+      "control_net": ["6", 0],
+      "image": ["3", 0],
+      "model": ["1", 0],
+      "positive": ["7_back", 0],
+      "negative": ["8", 0],
+      "image_kps": ["30_back_kps", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced"
+  },
+  "9_left": {
+    "inputs": {
+      "ip_weight": 0.86,
+      "cn_strength": 0.32,
+      "start_at": 0,
+      "end_at": 0.79,
+      "noise": 0.02,
+      "combine_embeds": "average",
+      "instantid": ["4", 0],
+      "insightface": ["5", 0],
+      "control_net": ["6", 0],
+      "image": ["3", 0],
+      "model": ["1", 0],
+      "positive": ["7_left", 0],
+      "negative": ["8", 0],
+      "image_kps": ["30_left_kps", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced"
+  },
+  "9_right": {
+    "inputs": {
+      "ip_weight": 0.86,
+      "cn_strength": 0.32,
+      "start_at": 0,
+      "end_at": 0.79,
+      "noise": 0.02,
+      "combine_embeds": "average",
+      "instantid": ["4", 0],
+      "insightface": ["5", 0],
+      "control_net": ["6", 0],
+      "image": ["3", 0],
+      "model": ["1", 0],
+      "positive": ["7_right", 0],
+      "negative": ["8", 0],
+      "image_kps": ["30_right_kps", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced"
+  },
+  "9_side": {
+    "inputs": {
+      "ip_weight": 0.82,
+      "cn_strength": 0.28,
+      "start_at": 0,
+      "end_at": 0.76,
+      "noise": 0,
+      "combine_embeds": "average",
+      "instantid": ["4", 0],
+      "insightface": ["5", 0],
+      "control_net": ["6", 0],
+      "image": ["3", 0],
+      "model": ["1", 0],
+      "positive": ["7_side", 0],
+      "negative": ["8", 0],
+      "image_kps": ["30_side_kps", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced"
+  },
+  "9_top": {
+    "inputs": {
+      "ip_weight": 0.84,
+      "cn_strength": 0.3,
+      "start_at": 0,
+      "end_at": 0.75,
+      "noise": 0.03,
+      "combine_embeds": "average",
+      "instantid": ["4", 0],
+      "insightface": ["5", 0],
+      "control_net": ["6", 0],
+      "image": ["3", 0],
+      "model": ["1", 0],
+      "positive": ["7_top", 0],
+      "negative": ["8", 0],
+      "image_kps": ["30_top_kps", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced"
+  },
+  "30_front_kps": {"inputs": {"image": "front.jpg"}, "class_type": "LoadImage"},
+  "30_back_kps": {"inputs": {"image": "back.jpg"}, "class_type": "LoadImage"},
+  "30_left_kps": {"inputs": {"image": "left.jpg"}, "class_type": "LoadImage"},
+  "30_right_kps": {"inputs": {"image": "right.jpg"}, "class_type": "LoadImage"},
+  "30_side_kps": {"inputs": {"image": "side.jpg"}, "class_type": "LoadImage"},
+  "30_top_kps": {"inputs": {"image": "top.jpg"}, "class_type": "LoadImage"},
+  "6_pose": {"inputs": {"control_net_name": "OpenPoseXL2.safetensors"}, "class_type": "ControlNetLoader"},
+  "31_front_dwpose": {"inputs": {"detect_hand": "disable", "detect_body": "enable", "detect_face": "disable", "resolution": 768, "bbox_detector": "yolox_l.onnx", "pose_estimator": "dw-ll_ucoco_384.onnx", "image": ["30_front_kps", 0]}, "class_type": "DWPreprocessor"},
+  "32_front_openpose": {"inputs": {"strength": 0.35, "start_percent": 0.0, "end_percent": 0.7, "positive": ["9_front", 1], "negative": ["9_front", 2], "control_net": ["6_pose", 0], "image": ["31_front_dwpose", 0]}, "class_type": "ControlNetApplyAdvanced"},
+  "31_back_dwpose": {"inputs": {"detect_hand": "disable", "detect_body": "enable", "detect_face": "disable", "resolution": 768, "bbox_detector": "yolox_l.onnx", "pose_estimator": "dw-ll_ucoco_384.onnx", "image": ["30_back_kps", 0]}, "class_type": "DWPreprocessor"},
+  "32_back_openpose": {"inputs": {"strength": 0.35, "start_percent": 0.0, "end_percent": 0.7, "positive": ["9_back", 1], "negative": ["9_back", 2], "control_net": ["6_pose", 0], "image": ["31_back_dwpose", 0]}, "class_type": "ControlNetApplyAdvanced"},
+  "31_left_dwpose": {"inputs": {"detect_hand": "disable", "detect_body": "enable", "detect_face": "disable", "resolution": 768, "bbox_detector": "yolox_l.onnx", "pose_estimator": "dw-ll_ucoco_384.onnx", "image": ["30_left_kps", 0]}, "class_type": "DWPreprocessor"},
+  "32_left_openpose": {"inputs": {"strength": 0.35, "start_percent": 0.0, "end_percent": 0.7, "positive": ["9_left", 1], "negative": ["9_left", 2], "control_net": ["6_pose", 0], "image": ["31_left_dwpose", 0]}, "class_type": "ControlNetApplyAdvanced"},
+  "31_right_dwpose": {"inputs": {"detect_hand": "disable", "detect_body": "enable", "detect_face": "disable", "resolution": 768, "bbox_detector": "yolox_l.onnx", "pose_estimator": "dw-ll_ucoco_384.onnx", "image": ["30_right_kps", 0]}, "class_type": "DWPreprocessor"},
+  "32_right_openpose": {"inputs": {"strength": 0.35, "start_percent": 0.0, "end_percent": 0.7, "positive": ["9_right", 1], "negative": ["9_right", 2], "control_net": ["6_pose", 0], "image": ["31_right_dwpose", 0]}, "class_type": "ControlNetApplyAdvanced"},
+  "31_side_dwpose": {"inputs": {"detect_hand": "disable", "detect_body": "enable", "detect_face": "disable", "resolution": 768, "bbox_detector": "yolox_l.onnx", "pose_estimator": "dw-ll_ucoco_384.onnx", "image": ["30_side_kps", 0]}, "class_type": "DWPreprocessor"},
+  "32_side_openpose": {"inputs": {"strength": 0.35, "start_percent": 0.0, "end_percent": 0.7, "positive": ["9_side", 1], "negative": ["9_side", 2], "control_net": ["6_pose", 0], "image": ["31_side_dwpose", 0]}, "class_type": "ControlNetApplyAdvanced"},
+  "31_top_dwpose": {"inputs": {"detect_hand": "disable", "detect_body": "enable", "detect_face": "disable", "resolution": 768, "bbox_detector": "yolox_l.onnx", "pose_estimator": "dw-ll_ucoco_384.onnx", "image": ["30_top_kps", 0]}, "class_type": "DWPreprocessor"},
+  "32_top_openpose": {"inputs": {"strength": 0.35, "start_percent": 0.0, "end_percent": 0.7, "positive": ["9_top", 1], "negative": ["9_top", 2], "control_net": ["6_pose", 0], "image": ["31_top_dwpose", 0]}, "class_type": "ControlNetApplyAdvanced"},
+  "11_front": {"inputs": {"seed": 42, "steps": 30, "cfg": 5.5, "sampler_name": "dpmpp_2m", "scheduler": "karras", "denoise": 0.55, "model": ["9_front", 0], "positive": ["32_front_openpose", 0], "negative": ["32_front_openpose", 1], "latent_image": ["20", 0]}, "class_type": "KSampler"},
+  "11_back": {"inputs": {"seed": 43, "steps": 30, "cfg": 5.5, "sampler_name": "dpmpp_2m", "scheduler": "karras", "denoise": 0.55, "model": ["9_back", 0], "positive": ["32_back_openpose", 0], "negative": ["32_back_openpose", 1], "latent_image": ["20", 0]}, "class_type": "KSampler"},
+  "11_left": {"inputs": {"seed": 44, "steps": 30, "cfg": 5.5, "sampler_name": "dpmpp_2m", "scheduler": "karras", "denoise": 0.55, "model": ["9_left", 0], "positive": ["32_left_openpose", 0], "negative": ["32_left_openpose", 1], "latent_image": ["20", 0]}, "class_type": "KSampler"},
+  "11_right": {"inputs": {"seed": 45, "steps": 30, "cfg": 5.5, "sampler_name": "dpmpp_2m", "scheduler": "karras", "denoise": 0.55, "model": ["9_right", 0], "positive": ["32_right_openpose", 0], "negative": ["32_right_openpose", 1], "latent_image": ["20", 0]}, "class_type": "KSampler"},
+  "11_side": {"inputs": {"seed": 46, "steps": 30, "cfg": 5.5, "sampler_name": "dpmpp_2m", "scheduler": "karras", "denoise": 0.55, "model": ["9_side", 0], "positive": ["32_side_openpose", 0], "negative": ["32_side_openpose", 1], "latent_image": ["20", 0]}, "class_type": "KSampler"},
+  "11_top": {"inputs": {"seed": 47, "steps": 30, "cfg": 5.5, "sampler_name": "dpmpp_2m", "scheduler": "karras", "denoise": 0.55, "model": ["9_top", 0], "positive": ["32_top_openpose", 0], "negative": ["32_top_openpose", 1], "latent_image": ["20", 0]}, "class_type": "KSampler"},
+  "13_front": {"inputs": {"samples": ["11_front", 0], "vae": ["12", 0]}, "class_type": "VAEDecode"},
+  "13_back": {"inputs": {"samples": ["11_back", 0], "vae": ["12", 0]}, "class_type": "VAEDecode"},
+  "13_left": {"inputs": {"samples": ["11_left", 0], "vae": ["12", 0]}, "class_type": "VAEDecode"},
+  "13_right": {"inputs": {"samples": ["11_right", 0], "vae": ["12", 0]}, "class_type": "VAEDecode"},
+  "13_side": {"inputs": {"samples": ["11_side", 0], "vae": ["12", 0]}, "class_type": "VAEDecode"},
+  "13_top": {"inputs": {"samples": ["11_top", 0], "vae": ["12", 0]}, "class_type": "VAEDecode"},
+  "15_front": {"inputs": {"filename_prefix": "portrait_front", "images": ["13_front", 0]}, "class_type": "SaveImage"},
+  "15_back": {"inputs": {"filename_prefix": "portrait_back", "images": ["13_back", 0]}, "class_type": "SaveImage"},
+  "15_left": {"inputs": {"filename_prefix": "portrait_left", "images": ["13_left", 0]}, "class_type": "SaveImage"},
+  "15_right": {"inputs": {"filename_prefix": "portrait_right", "images": ["13_right", 0]}, "class_type": "SaveImage"},
+  "15_side": {"inputs": {"filename_prefix": "portrait_side", "images": ["13_side", 0]}, "class_type": "SaveImage"},
+  "15_top": {"inputs": {"filename_prefix": "portrait_top", "images": ["13_top", 0]}, "class_type": "SaveImage"}
+}

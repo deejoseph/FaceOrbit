@@ -2,7 +2,16 @@
   "1": {
     "inputs": {"ckpt_name": "animagine-xl-3.1.safetensors"},
     "class_type": "CheckpointLoaderSimple",
-    "_meta": {"title": "Animagine XL 3.1"}
+    "_meta": {"title": "主模型"}
+  },
+  "2": {
+    "inputs": {
+      "lora_name": "qwen-image-edit-2511-multiple-angles-lora.safetensors",
+      "strength_model": 0.3,
+      "model": ["1", 0]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {"title": "多角度 LoRA"}
   },
   "3": {
     "inputs": {"image": "your_face.jpg"},
@@ -20,9 +29,9 @@
     "_meta": {"title": "人脸分析"}
   },
   "6": {
-    "inputs": {"control_net_name": "control_instant_id_sdxl.safetensors"},
+    "inputs": {"control_net_name": "diffusion_pytorch_model.safetensors"},
     "class_type": "ControlNetLoader",
-    "_meta": {"title": "InstantID ControlNet"}
+    "_meta": {"title": "ControlNet"}
   },
   "8": {
     "inputs": {
@@ -44,7 +53,7 @@
   },
   "7_front": {
     "inputs": {
-      "text": "masterpiece, best quality, very aesthetic, 1girl, front view, looking at viewer, solo, upper body, plain background, vibrant, high saturation, colorful, bright, detailed face, sharp focus",
+      "text": "masterpiece, best quality, very aesthetic, 1man, front view, looking at viewer, solo, upper body, plain background, vibrant, high saturation, colorful, bright, detailed face",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
@@ -54,7 +63,7 @@
     "inputs": {
       "ip_weight": 0.8, "cn_strength": 0.35, "start_at": 0, "end_at": 0.75, "noise": 0, "combine_embeds": "average",
       "instantid": ["4", 0], "insightface": ["5", 0], "control_net": ["6", 0],
-      "image": ["3", 0], "model": ["1", 0],
+      "image": ["3", 0], "model": ["2", 0],
       "positive": ["7_front", 0], "negative": ["8", 0]
     },
     "class_type": "ApplyInstantIDAdvanced",
@@ -88,7 +97,7 @@
   },
   "7_back": {
     "inputs": {
-      "text": "masterpiece, best quality, very aesthetic, 1girl, from behind, back view, looking away from camera, back of head, solo, upper body, plain background, vibrant, high saturation, colorful, bright, detailed hair",
+      "text": "masterpiece, best quality, very aesthetic, 1man, from behind, back view, looking away from camera, back of head, solo, upper body, plain background, vibrant, high saturation, colorful, bright, detailed hair",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
@@ -98,7 +107,7 @@
     "inputs": {
       "ip_weight": 0.8, "cn_strength": 0.28, "start_at": 0, "end_at": 0.7, "noise": 0, "combine_embeds": "average",
       "instantid": ["4", 0], "insightface": ["5", 0], "control_net": ["6", 0],
-      "image": ["3", 0], "model": ["1", 0],
+      "image": ["3", 0], "model": ["2", 0],
       "positive": ["7_back", 0], "negative": ["8", 0]
     },
     "class_type": "ApplyInstantIDAdvanced",
@@ -132,7 +141,7 @@
   },
   "7_side": {
     "inputs": {
-      "text": "masterpiece, best quality, very aesthetic, 1girl, side view, profile, facing left, solo, upper body, plain background, vibrant, high saturation, colorful, bright, detailed face",
+      "text": "masterpiece, best quality, very aesthetic, 1man, side view, profile, facing left, solo, upper body, plain background, vibrant, high saturation, colorful, bright",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
@@ -142,7 +151,7 @@
     "inputs": {
       "ip_weight": 0.68, "cn_strength": 0.17, "start_at": 0, "end_at": 0.65, "noise": 0, "combine_embeds": "average",
       "instantid": ["4", 0], "insightface": ["5", 0], "control_net": ["6", 0],
-      "image": ["3", 0], "model": ["1", 0],
+      "image": ["3", 0], "model": ["2", 0],
       "positive": ["7_side", 0], "negative": ["8", 0]
     },
     "class_type": "ApplyInstantIDAdvanced",
@@ -176,7 +185,7 @@
   },
   "7_threequarter": {
     "inputs": {
-      "text": "masterpiece, best quality, very aesthetic, 1girl, three quarter view, 3/4 pose, turned slightly, looking at camera, solo, upper body, plain background, vibrant, high saturation, colorful, bright, detailed face",
+      "text": "masterpiece, best quality, very aesthetic, 1man, three quarter view, 3/4 pose, turned slightly, looking at camera, solo, upper body, plain background, vibrant, high saturation, colorful, bright, detailed face",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
@@ -186,7 +195,7 @@
     "inputs": {
       "ip_weight": 0.8, "cn_strength": 0.35, "start_at": 0, "end_at": 0.75, "noise": 0, "combine_embeds": "average",
       "instantid": ["4", 0], "insightface": ["5", 0], "control_net": ["6", 0],
-      "image": ["3", 0], "model": ["1", 0],
+      "image": ["3", 0], "model": ["2", 0],
       "positive": ["7_threequarter", 0], "negative": ["8", 0]
     },
     "class_type": "ApplyInstantIDAdvanced",
@@ -220,7 +229,7 @@
   },
   "7_rightfront": {
     "inputs": {
-      "text": "masterpiece, best quality, very aesthetic, 1girl, facing right, looking right, right side, angled right, solo, upper body, plain background, vibrant, high saturation, colorful, bright, detailed face",
+      "text": "masterpiece, best quality, very aesthetic, 1man, facing right, looking right, right side, angled right, solo, upper body, plain background, vibrant, high saturation, colorful, bright, detailed face",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
@@ -230,7 +239,7 @@
     "inputs": {
       "ip_weight": 0.8, "cn_strength": 0.35, "start_at": 0, "end_at": 0.75, "noise": 0, "combine_embeds": "average",
       "instantid": ["4", 0], "insightface": ["5", 0], "control_net": ["6", 0],
-      "image": ["3", 0], "model": ["1", 0],
+      "image": ["3", 0], "model": ["2", 0],
       "positive": ["7_rightfront", 0], "negative": ["8", 0]
     },
     "class_type": "ApplyInstantIDAdvanced",
@@ -264,7 +273,7 @@
   },
   "7_top": {
     "inputs": {
-      "text": "masterpiece, best quality, very aesthetic, 1girl, looking up, from below, low angle, looking upward, worm's eye view, solo, upper body, plain background, vibrant, high saturation, colorful, bright, detailed face",
+      "text": "masterpiece, best quality, very aesthetic, 1man, looking up, from below, low angle, looking upward, worm's eye view, solo, upper body, plain background, vibrant, high saturation, colorful, bright, detailed face",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
@@ -274,7 +283,7 @@
     "inputs": {
       "ip_weight": 0.64, "cn_strength": 0.21, "start_at": 0, "end_at": 0.7, "noise": 0.05, "combine_embeds": "average",
       "instantid": ["4", 0], "insightface": ["5", 0], "control_net": ["6", 0],
-      "image": ["3", 0], "model": ["1", 0],
+      "image": ["3", 0], "model": ["2", 0],
       "positive": ["7_top", 0], "negative": ["8", 0]
     },
     "class_type": "ApplyInstantIDAdvanced",

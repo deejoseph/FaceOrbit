@@ -2,16 +2,7 @@
   "1": {
     "inputs": {"ckpt_name": "ghostxl_v10BakedVAE.safetensors"},
     "class_type": "CheckpointLoaderSimple",
-    "_meta": {"title": "模型加载-GhostXL"}
-  },
-  "2": {
-    "inputs": {
-      "lora_name": "qwen-image-edit-2511-multiple-angles-lora.safetensors",
-      "strength_model": 0.5,
-      "model": ["1", 0]
-    },
-    "class_type": "LoraLoaderModelOnly",
-    "_meta": {"title": "多角度 LoRA"}
+    "_meta": {"title": "GhostXL 2.5D模型"}
   },
   "3": {
     "inputs": {"image": "身份.jpg"},
@@ -35,7 +26,7 @@
   },
   "7": {
     "inputs": {
-      "text": "masterpiece, best quality, very aesthetic, 1girl, cyberpunk, neon light, sci-fi, detailed face",
+      "text": "masterpiece, best quality, very aesthetic, 1girl, cyberpunk, neon light, sci-fi, detailed face, vibrant colors, high contrast, sharp focus, 8k, ultra detailed, beautiful lighting",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
@@ -43,7 +34,7 @@
   },
   "8": {
     "inputs": {
-      "text": "nsfw, lowres, bad anatomy, bad hands, worst quality, low quality, blurry, ugly, deformed, grayscale, dull, washed out",
+      "text": "nsfw, lowres, bad anatomy, bad hands, worst quality, low quality, blurry, ugly, deformed, grayscale, dull, washed out, low contrast, noisy, pixelated, jpeg artifacts, watermark, text, signature, extra fingers, fused fingers, bad proportions, disfigured",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
@@ -51,15 +42,15 @@
   },
   "9": {
     "inputs": {
-      "weight": 0.85,
-      "cn_strength": 0.45,
+      "weight": 0.88,
+      "cn_strength": 0.5,
       "start_at": 0,
-      "end_at": 0.75,
+      "end_at": 0.78,
       "instantid": ["4", 0],
       "insightface": ["5", 0],
       "control_net": ["6", 0],
       "image": ["3", 0],
-      "model": ["2", 0],
+      "model": ["1", 0],
       "positive": ["7", 0],
       "negative": ["8", 0]
     },
@@ -74,11 +65,11 @@
   "11": {
     "inputs": {
       "seed": 42,
-      "steps": 28,
-      "cfg": 6.5,
+      "steps": 35,
+      "cfg": 7.0,
       "sampler_name": "dpmpp_2m",
       "scheduler": "karras",
-      "denoise": 0.6,
+      "denoise": 0.65,
       "model": ["9", 0],
       "positive": ["9", 1],
       "negative": ["9", 2],
@@ -99,7 +90,7 @@
   },
   "14": {
     "inputs": {
-      "correction_strength": 0.3,
+      "correction_strength": 0.45,
       "method": "luminance_zones",
       "auto_preserve": true,
       "lock_input_image": false,

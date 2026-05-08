@@ -269,19 +269,16 @@ Animagine XL 3.1 支持识别特定艺术家的风格，在提示词中加入艺
 ---
 
 ## 十一、提示词快速参考卡
-┌─────────────────────────────────────────────────────────────┐
-│ [质量] + [数量] + [角色] + [作品] + [服装] + [动作] + [场景] │
-├─────────────────────────────────────────────────────────────┤
-│ 质量: masterpiece, best quality, very aesthetic │
-│ 数量: 1girl, 1boy, 2girls, solo │
-│ 服装: school uniform, kimono, armor, casual clothes │
-│ 动作: standing, sitting, action pose, looking at viewer │
-│ 场景: plain background, cityscape, nature, night │
-│ 年代: newest, recent, mid, early, oldest │
-│ 评级: safe, sensitive, nsfw │
-└─────────────────────────────────────────────────────────────┘
 
-text
+**格式**：`[质量] + [数量] + [角色] + [作品] + [服装] + [动作] + [场景]`
+
+- **质量**：masterpiece, best quality, very aesthetic
+- **数量**：1girl, 1boy, 2girls, solo
+- **服装**：school uniform, kimono, armor, casual clothes
+- **动作**：standing, sitting, action pose, looking at viewer
+- **场景**：plain background, cityscape, nature, night
+- **年代**：newest, recent, mid, early, oldest
+- **评级**：safe, sensitive, nsfw
 
 ---
 

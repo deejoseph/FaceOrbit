@@ -18,8 +18,6 @@ from PIL import Image
 import io
 import random
 import shutil
-import tempfile
-import markdown
 
 from guide_content import GUIDE_MARKDOWN
 from character_presets import get_character_presets
@@ -65,64 +63,7 @@ DEFAULT_PROMPTS = {
     "top": "masterpiece, best quality, very aesthetic, 1girl, looking up, from below, low angle, looking upward, worm's eye view, solo, upper body, plain background"
 }
 
-# ==================== 指南显示函数 ====================
-def open_guide():
-    """将 Markdown 转换为 HTML 并在浏览器中打开"""
-    
-    # 将 Markdown 转换为 HTML
-    html_body = markdown.markdown(GUIDE_MARKDOWN, extensions=['tables', 'fenced_code'])
-    
-    # 完整的 HTML 页面模板
-    full_html = f"""<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>FaceOrbit - 二次元动漫模式操作指南</title>
-    <style>
-        body {{
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #f5f5f5;
-            line-height: 1.6;
-        }}
-        .container {{
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }}
-        h1 {{ color: #e74c3c; border-bottom: 3px solid #e74c3c; padding-bottom: 10px; }}
-        h2 {{ color: #2c3e50; border-left: 4px solid #e74c3c; padding-left: 15px; margin-top: 30px; }}
-        h3 {{ color: #555; margin-top: 20px; }}
-        table {{ width: 100%; border-collapse: collapse; margin: 15px 0; }}
-        th, td {{ padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }}
-        th {{ background: #f0f0f0; }}
-        code {{ background: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-family: monospace; }}
-        pre {{ background: #f4f4f4; padding: 12px; border-radius: 8px; overflow-x: auto; }}
-        blockquote {{ border-left: 4px solid #e74c3c; margin: 15px 0; padding-left: 15px; color: #555; }}
-        hr {{ margin: 20px 0; }}
-    </style>
-</head>
-<body>
-    <div class="container">
-        {html_body}
-    </div>
-</body>
-</html>"""
-    
-    # 保存临时 HTML 文件
-    temp_html = tempfile.NamedTemporaryFile(mode='w', suffix='.html', delete=False, encoding='utf-8')
-    temp_html.write(full_html)
-    temp_html.close()
-    
-    # 在浏览器中打开
-    webbrowser.open(f"file://{temp_html.name}")
-    
-    return "📖 已打开操作指南"
-
-# ==================== 辅助函数 ====================
+# -------------------- 辅助函数 --------------------
 def list_templates():
     templates = [f.replace('.json', '') for f in os.listdir(TEMPLATES_DIR) if f.endswith('.json')]
     return templates
@@ -517,11 +458,6 @@ def create_ui():
                     load_status = gr.Markdown("")
                     refresh_btn = gr.Button("🔄 刷新列表")
                 
-                # 操作指南按钮
-                guide_btn = gr.Button("📖 操作指南", variant="secondary", size="sm")
-                guide_status = gr.Markdown("")
-                guide_btn.click(fn=open_guide, outputs=[guide_status])
-                
                 generate_btn = gr.Button("🚀 开始生成", variant="primary", size="lg")
                 status = gr.Markdown("")
             
@@ -607,13 +543,6 @@ def open_browser(url, delay=1.5):
     threading.Timer(delay, lambda: webbrowser.open(url)).start()
 
 if __name__ == "__main__":
-    # 检查依赖
-    try:
-        import markdown
-    except ImportError:
-        print("❌ 缺少 markdown 库，请运行: pip install markdown")
-        exit(1)
-    
     demo = create_ui()
     local_url = "http://127.0.0.1:7862"
     
@@ -621,7 +550,6 @@ if __name__ == "__main__":
     print(f"📍 本地地址: {local_url}")
     print(f"🔧 ComfyUI API 地址: {COMFYUI_API}")
     print(f"🎲 默认使用随机种子，可勾选固定种子复现结果")
-    print(f"📖 点击「操作指南」按钮查看详细使用说明")
     
     open_browser(local_url)
     

@@ -33,18 +33,21 @@ if not exist "%COMFYUI_DIR%\main.py" (
 
 :: 清理端口（可选，避免冲突）
 echo [3/4] 清理端口...
+
+:: 启动器端口
 for /f "tokens=5" %%a in ('netstat -ano ^| findstr :7860 ^| findstr LISTENING') do (
     taskkill /PID %%a /F >nul 2>&1
 )
+
+:: 多角度模块
 for /f "tokens=5" %%a in ('netstat -ano ^| findstr :7861 ^| findstr LISTENING') do (
     taskkill /PID %%a /F >nul 2>&1
 )
 for /f "tokens=5" %%a in ('netstat -ano ^| findstr :7862 ^| findstr LISTENING') do (
     taskkill /PID %%a /F >nul 2>&1
 )
-for /f "tokens=5" %%a in ('netstat -ano ^| findstr :7863 ^| findstr LISTENING') do (
-    taskkill /PID %%a /F >nul 2>&1
-)
+
+:: 多画风模块
 for /f "tokens=5" %%a in ('netstat -ano ^| findstr :7864 ^| findstr LISTENING') do (
     taskkill /PID %%a /F >nul 2>&1
 )
@@ -52,7 +55,6 @@ for /f "tokens=5" %%a in ('netstat -ano ^| findstr :7865 ^| findstr LISTENING') 
     taskkill /PID %%a /F >nul 2>&1
 )
 
-:: 启动启动器
 echo [4/4] 启动 FaceOrbit...
 echo.
 echo ========================================
@@ -60,12 +62,14 @@ echo   启动成功！
 echo   请在浏览器中访问: http://127.0.0.1:7860
 echo ========================================
 echo.
-echo 提示: 
-echo   - 写真模式端口: 7861
-echo   - 二次元模式端口: 7862
-echo   - 立体感动漫端口: 7863
-echo   - 影视明星端口: 7864
-echo   - 科幻感动漫端口: 7865
+echo 模块说明:
+echo   📐 多角度模块:
+echo      - 写真模式端口: 7861
+echo      - 二次元模式端口: 7862
+echo.
+echo   🎨 多画风模块:
+echo      - 真实感画风端口: 7864
+echo      - 2.5D画风端口: 7865
 echo.
 echo 关闭此窗口将同时关闭所有模式
 echo ========================================

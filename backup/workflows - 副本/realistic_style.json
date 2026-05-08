@@ -1,8 +1,17 @@
 {
   "1": {
-    "inputs": {"ckpt_name": "RealVisXL_V5.0_fp16.safetensors"},
+    "inputs": {"ckpt_name": "realvisxlV50_v50LightningBakedvae.safetensors"},
     "class_type": "CheckpointLoaderSimple",
-    "_meta": {"title": "RealVisXL V5.0"}
+    "_meta": {"title": "模型加载-RealVisXL"}
+  },
+  "2": {
+    "inputs": {
+      "lora_name": "qwen-image-edit-2511-multiple-angles-lora.safetensors",
+      "strength_model": 0.5,
+      "model": ["1", 0]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {"title": "多角度 LoRA"}
   },
   "3": {
     "inputs": {"image": "身份.jpg"},
@@ -26,7 +35,7 @@
   },
   "7": {
     "inputs": {
-      "text": "professional portrait photo, a woman, natural skin texture, soft studio lighting, clean white background, high resolution, realistic, 8k, sharp focus, balanced exposure, natural skin tone, highly detailed, professional photography, award winning",
+      "text": "centered, portrait photo of 35 y.o woman, open jacket, sweater, natural skin, dark shot",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
@@ -34,7 +43,7 @@
   },
   "8": {
     "inputs": {
-      "text": "nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name, ugly, deformed, illustration, 3d, 2d, painting, cartoon, sketch, dark, underexposed, low contrast, gray skin, dull color, flat lighting",
+      "text": "nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name, ugly, deformed",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
@@ -42,15 +51,15 @@
   },
   "9": {
     "inputs": {
-      "weight": 0.92,
-      "cn_strength": 0.55,
+      "weight": 0.9,
+      "cn_strength": 0.5,
       "start_at": 0,
-      "end_at": 0.82,
+      "end_at": 0.8,
       "instantid": ["4", 0],
       "insightface": ["5", 0],
       "control_net": ["6", 0],
       "image": ["3", 0],
-      "model": ["1", 0],
+      "model": ["2", 0],
       "positive": ["7", 0],
       "negative": ["8", 0]
     },
@@ -65,11 +74,11 @@
   "11": {
     "inputs": {
       "seed": 42,
-      "steps": 35,
-      "cfg": 5.0,
+      "steps": 25,
+      "cfg": 2.5,
       "sampler_name": "dpmpp_2m",
       "scheduler": "karras",
-      "denoise": 0.68,
+      "denoise": 0.7,
       "model": ["9", 0],
       "positive": ["9", 1],
       "negative": ["9", 2],
@@ -90,7 +99,7 @@
   },
   "14": {
     "inputs": {
-      "correction_strength": 0.5,
+      "correction_strength": 0.4,
       "method": "luminance_zones",
       "auto_preserve": true,
       "lock_input_image": false,

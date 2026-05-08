@@ -1,8 +1,17 @@
 {
   "1": {
-    "inputs": {"ckpt_name": "RealVisXL_V5.0_fp16.safetensors"},
+    "inputs": {"ckpt_name": "ghostxl_v10BakedVAE.safetensors"},
     "class_type": "CheckpointLoaderSimple",
-    "_meta": {"title": "RealVisXL V5.0"}
+    "_meta": {"title": "模型加载-GhostXL"}
+  },
+  "2": {
+    "inputs": {
+      "lora_name": "qwen-image-edit-2511-multiple-angles-lora.safetensors",
+      "strength_model": 0.5,
+      "model": ["1", 0]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {"title": "多角度 LoRA"}
   },
   "3": {
     "inputs": {"image": "身份.jpg"},
@@ -26,7 +35,7 @@
   },
   "7": {
     "inputs": {
-      "text": "professional portrait photo, a woman, natural skin texture, soft studio lighting, clean white background, high resolution, realistic, 8k, sharp focus, balanced exposure, natural skin tone, highly detailed, professional photography, award winning",
+      "text": "masterpiece, best quality, very aesthetic, 1girl, cyberpunk, neon light, sci-fi, detailed face",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
@@ -34,7 +43,7 @@
   },
   "8": {
     "inputs": {
-      "text": "nsfw, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, artist name, ugly, deformed, illustration, 3d, 2d, painting, cartoon, sketch, dark, underexposed, low contrast, gray skin, dull color, flat lighting",
+      "text": "nsfw, lowres, bad anatomy, bad hands, worst quality, low quality, blurry, ugly, deformed, grayscale, dull, washed out",
       "clip": ["1", 1]
     },
     "class_type": "CLIPTextEncode",
@@ -42,15 +51,15 @@
   },
   "9": {
     "inputs": {
-      "weight": 0.92,
-      "cn_strength": 0.55,
+      "weight": 0.85,
+      "cn_strength": 0.45,
       "start_at": 0,
-      "end_at": 0.82,
+      "end_at": 0.75,
       "instantid": ["4", 0],
       "insightface": ["5", 0],
       "control_net": ["6", 0],
       "image": ["3", 0],
-      "model": ["1", 0],
+      "model": ["2", 0],
       "positive": ["7", 0],
       "negative": ["8", 0]
     },
@@ -58,18 +67,18 @@
     "_meta": {"title": "InstantID"}
   },
   "10": {
-    "inputs": {"width": 896, "height": 1152, "batch_size": 1},
+    "inputs": {"width": 1024, "height": 1024, "batch_size": 1},
     "class_type": "EmptyLatentImage",
     "_meta": {"title": "潜空间"}
   },
   "11": {
     "inputs": {
       "seed": 42,
-      "steps": 35,
-      "cfg": 5.0,
+      "steps": 28,
+      "cfg": 6.5,
       "sampler_name": "dpmpp_2m",
       "scheduler": "karras",
-      "denoise": 0.68,
+      "denoise": 0.6,
       "model": ["9", 0],
       "positive": ["9", 1],
       "negative": ["9", 2],
@@ -90,7 +99,7 @@
   },
   "14": {
     "inputs": {
-      "correction_strength": 0.5,
+      "correction_strength": 0.3,
       "method": "luminance_zones",
       "auto_preserve": true,
       "lock_input_image": false,
@@ -101,7 +110,7 @@
     "_meta": {"title": "VAE色彩校正"}
   },
   "15": {
-    "inputs": {"filename_prefix": "realistic_style", "images": ["14", 0]},
+    "inputs": {"filename_prefix": "scifi_style", "images": ["14", 0]},
     "class_type": "SaveImage",
     "_meta": {"title": "保存图片"}
   }

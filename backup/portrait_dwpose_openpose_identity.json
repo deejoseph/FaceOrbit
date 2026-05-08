@@ -1,0 +1,1179 @@
+{
+  "1": {
+    "inputs": {
+      "ckpt_name": "RealVisXL_V5.0_fp16.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Model - RealVisXL fp16"
+    }
+  },
+  "3": {
+    "inputs": {
+      "image": "face13.webp"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Uploaded Image"
+    }
+  },
+  "4": {
+    "inputs": {
+      "instantid_file": "ip-adapter.bin"
+    },
+    "class_type": "InstantIDModelLoader",
+    "_meta": {
+      "title": "InstantID Model"
+    }
+  },
+  "5": {
+    "inputs": {
+      "provider": "CUDA"
+    },
+    "class_type": "InstantIDFaceAnalysis",
+    "_meta": {
+      "title": "Face Analysis"
+    }
+  },
+  "6": {
+    "inputs": {
+      "control_net_name": "diffusion_pytorch_model.safetensors"
+    },
+    "class_type": "ControlNetLoader",
+    "_meta": {
+      "title": "InstantID ControlNet"
+    }
+  },
+  "8": {
+    "inputs": {
+      "text": "worst quality, low quality, normal quality, lowres, jpeg artifacts, blurry, noisy, soft focus, distorted, deformed, ugly, bad anatomy, bad hands, bad fingers, missing fingers, extra fingers, asymmetrical face, tilted face, crooked face, out of frame, cropped head, two heads, double head, multiple faces, extra head, clone, multiple people, watermark, text, signature, illustration, 3d, 2d, painting, cartoon, sketch, dark, underexposed, low contrast, gray skin, dull color, muddy colors, flat lighting, haze, foggy, washed out, gender swap, wrong gender, different person, different face, different hairstyle, different clothing, changed outfit, makeup transformation, feminized face, masculinized face",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Negative Prompt"
+    }
+  },
+  "12": {
+    "inputs": {
+      "vae_name": "sdxl_vae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "SDXL VAE"
+    }
+  },
+  "20": {
+    "inputs": {
+      "pixels": [
+        "3",
+        0
+      ],
+      "vae": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "Encode Uploaded Image"
+    }
+  },
+  "7_front": {
+    "inputs": {
+      "text": "high quality realistic same person as uploaded reference image, preserve apparent gender, age, facial proportions, hairstyle, hair color, body type, outfit colors and outfit silhouette, identity consistent across all views, full body studio portrait photo of the same person from the uploaded reference image, same face identity, same face shape, same eyes, same nose, same mouth, same hairstyle, front view, facing camera, standing upright, both eyes visible, natural skin texture, plain solid white background, bright soft studio lighting, balanced exposure, clear contrast, natural skin tone, sharp focus, high resolution",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Prompt - Front"
+    }
+  },
+  "7_back": {
+    "inputs": {
+      "text": "high quality realistic same person as uploaded reference image, preserve apparent gender, age, facial proportions, hairstyle, hair color, body type, outfit colors and outfit silhouette, identity consistent across all views, full body studio portrait photo of the same person from the uploaded reference image, same hairstyle, same body type, same clothing style, back view, facing away from camera, back of head visible, no face visible, standing upright, plain solid white background, bright soft studio lighting, balanced exposure, clear contrast, realistic color, sharp focus, high resolution",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Prompt - Back"
+    }
+  },
+  "7_left": {
+    "inputs": {
+      "text": "high quality realistic same person as uploaded reference image, preserve apparent gender, age, facial proportions, hairstyle, hair color, body type, outfit colors and outfit silhouette, identity consistent across all views, full body studio portrait photo of the same person from the uploaded reference image, same face identity, same face shape, same eyes, same nose, same mouth, same hairstyle, left three quarter view, body turned about 45 degrees left, head turned slightly toward camera, standing upright, plain solid white background, bright soft studio lighting, balanced exposure, clear contrast, natural skin tone, sharp focus, high resolution",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Prompt - Left Three Quarter"
+    }
+  },
+  "7_right": {
+    "inputs": {
+      "text": "high quality realistic same person as uploaded reference image, preserve apparent gender, age, facial proportions, hairstyle, hair color, body type, outfit colors and outfit silhouette, identity consistent across all views, full body studio portrait photo of the same person from the uploaded reference image, same face identity, same face shape, same eyes, same nose, same mouth, same hairstyle, right three quarter view, body turned about 45 degrees right, head turned slightly toward camera, standing upright, plain solid white background, bright soft studio lighting, balanced exposure, clear contrast, natural skin tone, sharp focus, high resolution",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Prompt - Right Three Quarter"
+    }
+  },
+  "7_threequarter": {
+    "inputs": {
+      "text": "high quality realistic same person as uploaded reference image, preserve apparent gender, age, facial proportions, hairstyle, hair color, body type, outfit colors and outfit silhouette, identity consistent across all views, full body studio portrait photo of the same person from the uploaded reference image, same face identity, same face shape, same eyes, same nose, same mouth, same hairstyle, strict side profile view, body turned 90 degrees sideways, one eye visible, nose profile visible, standing upright, plain solid white background, bright soft studio lighting, balanced exposure, clear contrast, natural skin tone, sharp focus, high resolution",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Prompt - Side Profile"
+    }
+  },
+  "7_top": {
+    "inputs": {
+      "text": "high quality realistic same person as uploaded reference image, preserve apparent gender, age, facial proportions, hairstyle, hair color, body type, outfit colors and outfit silhouette, identity consistent across all views, portrait photo of the same person from the uploaded reference image, same face identity, same face shape, same hairstyle, top down view, camera above the person, visible head and shoulders from above, plain solid white background, bright soft studio lighting, balanced exposure, clear contrast, natural skin tone, sharp focus, high resolution",
+      "clip": [
+        "1",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Prompt - Top Down"
+    }
+  },
+  "9_front": {
+    "inputs": {
+      "ip_weight": 1.15,
+      "cn_strength": 0.42,
+      "start_at": 0,
+      "end_at": 0.86,
+      "noise": 0,
+      "combine_embeds": "average",
+      "instantid": [
+        "4",
+        0
+      ],
+      "insightface": [
+        "5",
+        0
+      ],
+      "control_net": [
+        "6",
+        0
+      ],
+      "image": [
+        "3",
+        0
+      ],
+      "model": [
+        "1",
+        0
+      ],
+      "positive": [
+        "7_front",
+        0
+      ],
+      "negative": [
+        "8",
+        0
+      ],
+      "image_kps": [
+        "30_front_kps",
+        0
+      ]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {
+      "title": "InstantID - Front"
+    }
+  },
+  "9_back": {
+    "inputs": {
+      "ip_weight": 0.72,
+      "cn_strength": 0.05,
+      "start_at": 0,
+      "end_at": 0.78,
+      "noise": 0.05,
+      "combine_embeds": "average",
+      "instantid": [
+        "4",
+        0
+      ],
+      "insightface": [
+        "5",
+        0
+      ],
+      "control_net": [
+        "6",
+        0
+      ],
+      "image": [
+        "3",
+        0
+      ],
+      "model": [
+        "1",
+        0
+      ],
+      "positive": [
+        "7_back",
+        0
+      ],
+      "negative": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {
+      "title": "InstantID - Back"
+    }
+  },
+  "9_left": {
+    "inputs": {
+      "ip_weight": 1.22,
+      "cn_strength": 0.32,
+      "start_at": 0,
+      "end_at": 0.86,
+      "noise": 0.02,
+      "combine_embeds": "average",
+      "instantid": [
+        "4",
+        0
+      ],
+      "insightface": [
+        "5",
+        0
+      ],
+      "control_net": [
+        "6",
+        0
+      ],
+      "image": [
+        "3",
+        0
+      ],
+      "model": [
+        "1",
+        0
+      ],
+      "positive": [
+        "7_left",
+        0
+      ],
+      "negative": [
+        "8",
+        0
+      ],
+      "image_kps": [
+        "30_left_kps",
+        0
+      ]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {
+      "title": "InstantID - Left Three Quarter"
+    }
+  },
+  "9_right": {
+    "inputs": {
+      "ip_weight": 1.22,
+      "cn_strength": 0.32,
+      "start_at": 0,
+      "end_at": 0.86,
+      "noise": 0.02,
+      "combine_embeds": "average",
+      "instantid": [
+        "4",
+        0
+      ],
+      "insightface": [
+        "5",
+        0
+      ],
+      "control_net": [
+        "6",
+        0
+      ],
+      "image": [
+        "3",
+        0
+      ],
+      "model": [
+        "1",
+        0
+      ],
+      "positive": [
+        "7_right",
+        0
+      ],
+      "negative": [
+        "8",
+        0
+      ],
+      "image_kps": [
+        "30_right_kps",
+        0
+      ]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {
+      "title": "InstantID - Right Three Quarter"
+    }
+  },
+  "9_threequarter": {
+    "inputs": {
+      "ip_weight": 1.18,
+      "cn_strength": 0.28,
+      "start_at": 0,
+      "end_at": 0.86,
+      "noise": 0,
+      "combine_embeds": "average",
+      "instantid": [
+        "4",
+        0
+      ],
+      "insightface": [
+        "5",
+        0
+      ],
+      "control_net": [
+        "6",
+        0
+      ],
+      "image": [
+        "3",
+        0
+      ],
+      "model": [
+        "1",
+        0
+      ],
+      "positive": [
+        "7_threequarter",
+        0
+      ],
+      "negative": [
+        "8",
+        0
+      ],
+      "image_kps": [
+        "30_threequarter_kps",
+        0
+      ]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {
+      "title": "InstantID - Side Profile"
+    }
+  },
+  "9_top": {
+    "inputs": {
+      "ip_weight": 0.95,
+      "cn_strength": 0.1,
+      "start_at": 0,
+      "end_at": 0.78,
+      "noise": 0.03,
+      "combine_embeds": "average",
+      "instantid": [
+        "4",
+        0
+      ],
+      "insightface": [
+        "5",
+        0
+      ],
+      "control_net": [
+        "6",
+        0
+      ],
+      "image": [
+        "3",
+        0
+      ],
+      "model": [
+        "1",
+        0
+      ],
+      "positive": [
+        "7_top",
+        0
+      ],
+      "negative": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {
+      "title": "InstantID - Top Down"
+    }
+  },
+  "11_front": {
+    "inputs": {
+      "seed": 788740208168197,
+      "steps": 30,
+      "cfg": 5.2,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.32,
+      "model": [
+        "9_front",
+        0
+      ],
+      "positive": [
+        "32_front_openpose",
+        0
+      ],
+      "negative": [
+        "32_front_openpose",
+        1
+      ],
+      "latent_image": [
+        "20",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "Sampler - Front"
+    }
+  },
+  "11_back": {
+    "inputs": {
+      "seed": 890966738042580,
+      "steps": 32,
+      "cfg": 5.0,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1,
+      "model": [
+        "9_back",
+        0
+      ],
+      "positive": [
+        "32_back_openpose",
+        0
+      ],
+      "negative": [
+        "32_back_openpose",
+        1
+      ],
+      "latent_image": [
+        "10_back",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "Sampler - Back"
+    }
+  },
+  "11_left": {
+    "inputs": {
+      "seed": 650710759051678,
+      "steps": 32,
+      "cfg": 5.2,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1,
+      "model": [
+        "9_left",
+        0
+      ],
+      "positive": [
+        "32_left_openpose",
+        0
+      ],
+      "negative": [
+        "32_left_openpose",
+        1
+      ],
+      "latent_image": [
+        "10_left",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "Sampler - Left Three Quarter"
+    }
+  },
+  "11_right": {
+    "inputs": {
+      "seed": 295933748614006,
+      "steps": 32,
+      "cfg": 5.2,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1,
+      "model": [
+        "9_right",
+        0
+      ],
+      "positive": [
+        "32_right_openpose",
+        0
+      ],
+      "negative": [
+        "32_right_openpose",
+        1
+      ],
+      "latent_image": [
+        "10_right",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "Sampler - Right Three Quarter"
+    }
+  },
+  "11_threequarter": {
+    "inputs": {
+      "seed": 650233343777670,
+      "steps": 32,
+      "cfg": 5.2,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1,
+      "model": [
+        "9_threequarter",
+        0
+      ],
+      "positive": [
+        "32_threequarter_openpose",
+        0
+      ],
+      "negative": [
+        "32_threequarter_openpose",
+        1
+      ],
+      "latent_image": [
+        "10_threequarter",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "Sampler - Side Profile"
+    }
+  },
+  "11_top": {
+    "inputs": {
+      "seed": 227305622798855,
+      "steps": 32,
+      "cfg": 5.0,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1,
+      "model": [
+        "9_top",
+        0
+      ],
+      "positive": [
+        "32_top_openpose",
+        0
+      ],
+      "negative": [
+        "32_top_openpose",
+        1
+      ],
+      "latent_image": [
+        "10_top",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "Sampler - Top Down"
+    }
+  },
+  "13_front": {
+    "inputs": {
+      "samples": [
+        "11_front",
+        0
+      ],
+      "vae": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Decode - Front"
+    }
+  },
+  "13_back": {
+    "inputs": {
+      "samples": [
+        "11_back",
+        0
+      ],
+      "vae": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Decode - Back"
+    }
+  },
+  "13_left": {
+    "inputs": {
+      "samples": [
+        "11_left",
+        0
+      ],
+      "vae": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Decode - Left Three Quarter"
+    }
+  },
+  "13_right": {
+    "inputs": {
+      "samples": [
+        "11_right",
+        0
+      ],
+      "vae": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Decode - Right Three Quarter"
+    }
+  },
+  "13_threequarter": {
+    "inputs": {
+      "samples": [
+        "11_threequarter",
+        0
+      ],
+      "vae": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Decode - Side Profile"
+    }
+  },
+  "13_top": {
+    "inputs": {
+      "samples": [
+        "11_top",
+        0
+      ],
+      "vae": [
+        "12",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Decode - Top Down"
+    }
+  },
+  "15_front": {
+    "inputs": {
+      "filename_prefix": "portrait_dwpose_openpose_front",
+      "images": [
+        "13_front",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save - Front"
+    }
+  },
+  "15_back": {
+    "inputs": {
+      "filename_prefix": "portrait_dwpose_openpose_back",
+      "images": [
+        "13_back",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save - Back"
+    }
+  },
+  "15_left": {
+    "inputs": {
+      "filename_prefix": "portrait_dwpose_openpose_left_threequarter",
+      "images": [
+        "13_left",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save - Left Three Quarter"
+    }
+  },
+  "15_right": {
+    "inputs": {
+      "filename_prefix": "portrait_dwpose_openpose_right_threequarter",
+      "images": [
+        "13_right",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save - Right Three Quarter"
+    }
+  },
+  "15_threequarter": {
+    "inputs": {
+      "filename_prefix": "portrait_dwpose_openpose_side",
+      "images": [
+        "13_threequarter",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save - Side Profile"
+    }
+  },
+  "15_top": {
+    "inputs": {
+      "filename_prefix": "portrait_dwpose_openpose_top",
+      "images": [
+        "13_top",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save - Top Down"
+    }
+  },
+  "30_front_kps": {
+    "inputs": {
+      "image": "front.jpg"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "KPS Reference - Front"
+    }
+  },
+  "30_back_kps": {
+    "inputs": {
+      "image": "back.jpg"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "KPS Reference - Back"
+    }
+  },
+  "30_left_kps": {
+    "inputs": {
+      "image": "left.jpg"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "KPS Reference - Left"
+    }
+  },
+  "30_right_kps": {
+    "inputs": {
+      "image": "right.jpg"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "KPS Reference - Right"
+    }
+  },
+  "30_threequarter_kps": {
+    "inputs": {
+      "image": "side.jpg"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "KPS Reference - Three Quarter"
+    }
+  },
+  "30_top_kps": {
+    "inputs": {
+      "image": "top.jpg"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "KPS Reference - Top Down"
+    }
+  },
+  "10_back": {
+    "inputs": {
+      "width": 896,
+      "height": 1152,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Latent - Back"
+    }
+  },
+  "10_left": {
+    "inputs": {
+      "width": 896,
+      "height": 1152,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Latent - Left"
+    }
+  },
+  "10_right": {
+    "inputs": {
+      "width": 896,
+      "height": 1152,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Latent - Right"
+    }
+  },
+  "10_threequarter": {
+    "inputs": {
+      "width": 896,
+      "height": 1152,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Latent - Three Quarter"
+    }
+  },
+  "10_top": {
+    "inputs": {
+      "width": 896,
+      "height": 1152,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Latent - Top"
+    }
+  },
+  "6_pose": {
+    "inputs": {
+      "control_net_name": "OpenPoseXL2.safetensors"
+    },
+    "class_type": "ControlNetLoader",
+    "_meta": {
+      "title": "OpenPoseXL2 ControlNet"
+    }
+  },
+  "31_front_dwpose": {
+    "inputs": {
+      "detect_hand": "disable",
+      "detect_body": "enable",
+      "detect_face": "disable",
+      "resolution": 1024,
+      "bbox_detector": "yolox_l.onnx",
+      "pose_estimator": "dw-ll_ucoco_384.onnx",
+      "scale_stick_for_xinsr_cn": "disable",
+      "image": [
+        "30_front_kps",
+        0
+      ]
+    },
+    "class_type": "DWPreprocessor",
+    "_meta": {
+      "title": "DWPose Skeleton - front"
+    }
+  },
+  "32_front_openpose": {
+    "inputs": {
+      "strength": 0.45,
+      "start_percent": 0.0,
+      "end_percent": 0.75,
+      "positive": [
+        "9_front",
+        1
+      ],
+      "negative": [
+        "9_front",
+        2
+      ],
+      "control_net": [
+        "6_pose",
+        0
+      ],
+      "image": [
+        "31_front_dwpose",
+        0
+      ]
+    },
+    "class_type": "ControlNetApplyAdvanced",
+    "_meta": {
+      "title": "OpenPose Control - front"
+    }
+  },
+  "31_left_dwpose": {
+    "inputs": {
+      "detect_hand": "disable",
+      "detect_body": "enable",
+      "detect_face": "disable",
+      "resolution": 1024,
+      "bbox_detector": "yolox_l.onnx",
+      "pose_estimator": "dw-ll_ucoco_384.onnx",
+      "scale_stick_for_xinsr_cn": "disable",
+      "image": [
+        "30_left_kps",
+        0
+      ]
+    },
+    "class_type": "DWPreprocessor",
+    "_meta": {
+      "title": "DWPose Skeleton - left"
+    }
+  },
+  "32_left_openpose": {
+    "inputs": {
+      "strength": 0.95,
+      "start_percent": 0.0,
+      "end_percent": 0.88,
+      "positive": [
+        "9_left",
+        1
+      ],
+      "negative": [
+        "9_left",
+        2
+      ],
+      "control_net": [
+        "6_pose",
+        0
+      ],
+      "image": [
+        "31_left_dwpose",
+        0
+      ]
+    },
+    "class_type": "ControlNetApplyAdvanced",
+    "_meta": {
+      "title": "OpenPose Control - left"
+    }
+  },
+  "31_right_dwpose": {
+    "inputs": {
+      "detect_hand": "disable",
+      "detect_body": "enable",
+      "detect_face": "disable",
+      "resolution": 1024,
+      "bbox_detector": "yolox_l.onnx",
+      "pose_estimator": "dw-ll_ucoco_384.onnx",
+      "scale_stick_for_xinsr_cn": "disable",
+      "image": [
+        "30_right_kps",
+        0
+      ]
+    },
+    "class_type": "DWPreprocessor",
+    "_meta": {
+      "title": "DWPose Skeleton - right"
+    }
+  },
+  "32_right_openpose": {
+    "inputs": {
+      "strength": 0.95,
+      "start_percent": 0.0,
+      "end_percent": 0.88,
+      "positive": [
+        "9_right",
+        1
+      ],
+      "negative": [
+        "9_right",
+        2
+      ],
+      "control_net": [
+        "6_pose",
+        0
+      ],
+      "image": [
+        "31_right_dwpose",
+        0
+      ]
+    },
+    "class_type": "ControlNetApplyAdvanced",
+    "_meta": {
+      "title": "OpenPose Control - right"
+    }
+  },
+  "31_threequarter_dwpose": {
+    "inputs": {
+      "detect_hand": "disable",
+      "detect_body": "enable",
+      "detect_face": "disable",
+      "resolution": 1024,
+      "bbox_detector": "yolox_l.onnx",
+      "pose_estimator": "dw-ll_ucoco_384.onnx",
+      "scale_stick_for_xinsr_cn": "disable",
+      "image": [
+        "30_threequarter_kps",
+        0
+      ]
+    },
+    "class_type": "DWPreprocessor",
+    "_meta": {
+      "title": "DWPose Skeleton - threequarter"
+    }
+  },
+  "32_threequarter_openpose": {
+    "inputs": {
+      "strength": 1.05,
+      "start_percent": 0.0,
+      "end_percent": 0.9,
+      "positive": [
+        "9_threequarter",
+        1
+      ],
+      "negative": [
+        "9_threequarter",
+        2
+      ],
+      "control_net": [
+        "6_pose",
+        0
+      ],
+      "image": [
+        "31_threequarter_dwpose",
+        0
+      ]
+    },
+    "class_type": "ControlNetApplyAdvanced",
+    "_meta": {
+      "title": "OpenPose Control - threequarter"
+    }
+  },
+  "31_back_dwpose": {
+    "inputs": {
+      "detect_hand": "disable",
+      "detect_body": "enable",
+      "detect_face": "disable",
+      "resolution": 1024,
+      "bbox_detector": "yolox_l.onnx",
+      "pose_estimator": "dw-ll_ucoco_384.onnx",
+      "scale_stick_for_xinsr_cn": "disable",
+      "image": [
+        "30_back_kps",
+        0
+      ]
+    },
+    "class_type": "DWPreprocessor",
+    "_meta": {
+      "title": "DWPose Skeleton - back"
+    }
+  },
+  "32_back_openpose": {
+    "inputs": {
+      "strength": 1.0,
+      "start_percent": 0.0,
+      "end_percent": 0.9,
+      "positive": [
+        "9_back",
+        1
+      ],
+      "negative": [
+        "9_back",
+        2
+      ],
+      "control_net": [
+        "6_pose",
+        0
+      ],
+      "image": [
+        "31_back_dwpose",
+        0
+      ]
+    },
+    "class_type": "ControlNetApplyAdvanced",
+    "_meta": {
+      "title": "OpenPose Control - back"
+    }
+  },
+  "31_top_dwpose": {
+    "inputs": {
+      "detect_hand": "disable",
+      "detect_body": "enable",
+      "detect_face": "disable",
+      "resolution": 1024,
+      "bbox_detector": "yolox_l.onnx",
+      "pose_estimator": "dw-ll_ucoco_384.onnx",
+      "scale_stick_for_xinsr_cn": "disable",
+      "image": [
+        "30_top_kps",
+        0
+      ]
+    },
+    "class_type": "DWPreprocessor",
+    "_meta": {
+      "title": "DWPose Skeleton - top"
+    }
+  },
+  "32_top_openpose": {
+    "inputs": {
+      "strength": 0.8,
+      "start_percent": 0.0,
+      "end_percent": 0.86,
+      "positive": [
+        "9_top",
+        1
+      ],
+      "negative": [
+        "9_top",
+        2
+      ],
+      "control_net": [
+        "6_pose",
+        0
+      ],
+      "image": [
+        "31_top_dwpose",
+        0
+      ]
+    },
+    "class_type": "ControlNetApplyAdvanced",
+    "_meta": {
+      "title": "OpenPose Control - top"
+    }
+  }
+}

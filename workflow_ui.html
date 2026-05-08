@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Portrait Workflow - 多角度人像生成</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+            color: #333;
+        }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #34495e; margin-top: 30px; border-left: 4px solid #3498db; padding-left: 15px; }
+        h3 { color: #555; margin-top: 20px; }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .workflow-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .workflow-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 18px;
+            border-left: 5px solid;
+        }
+        .workflow-pose { border-left-color: #e74c3c; }
+        .workflow-face { border-left-color: #2ecc71; }
+        .workflow-balanced { border-left-color: #3498db; }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        .badge-pose { background: #e74c3c20; color: #e74c3c; }
+        .badge-face { background: #2ecc7120; color: #2ecc71; }
+        .badge-balanced { background: #3498db20; color: #3498db; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th { background: #f0f0f0; font-weight: 600; }
+        .param-highlight {
+            background: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .note {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #3498db;
+        }
+        img.skeleton-guide {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            margin: 15px 0;
+        }
+        .model-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .model-tag {
+            background: #2c3e50;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-family: monospace;
+        }
+        .warning {
+            background: #fef3c7;
+            border-left-color: #f59e0b;
+        }
+        .success {
+            background: #d1fae5;
+            border-left-color: #10b981;
+        }
+    </style>
+</head>
+<body>
+
+<h1>📸 多角度人像生成工作流</h1>
+<p>基于 InstantID + DWPose 的 SDXL 工作流，支持生成同一人物的 6 个角度（前、后、左、右、侧、顶）</p>
+
+<div class="note success">
+    <strong>✅ 定稿版本</strong> | 最后更新: 2026-01-15 | 测试状态: 通过
+</div>
+
+<h2>📦 所需模型清单</h2>
+<div class="card">
+    <h3>必须模型</h3>
+    <div class="model-list">
+        <span class="model-tag">RealVisXL_V5.0_fp16.safetensors</span>
+        <span class="model-tag">sdxl_vae.safetensors</span>
+        <span class="model-tag">ip-adapter.bin</span>
+        <span class="model-tag">diffusion_pytorch_model.safetensors</span>
+    </div>
+    <p><strong>安装路径：</strong></p>
+    <ul>
+        <li>Checkpoint 模型 → <code>ComfyUI/models/checkpoints/</code></li>
+        <li>VAE 模型 → <code>ComfyUI/models/vae/</code></li>
+        <li>InstantID 模型 → <code>ComfyUI/models/instantid/</code></li>
+        <li>ControlNet 模型 → <code>ComfyUI/models/controlnet/</code></li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>必备自定义节点</h3>
+    <div class="model-list">
+        <span class="model-tag">ComfyUI_InstantID</span>
+        <span class="model-tag">comfyui_controlnet_aux</span>
+        <span class="model-tag">ComfyUI-IPAdapter_plus</span>
+    </div>
+    <p>通过 ComfyUI Manager 安装，或手动 git clone 到 <code>ComfyUI/custom_nodes/</code></p>
+</div>
+
+<div class="card">
+    <h3>姿态骨架生成模型（DWPose）</h3>
+    <div class="model-list">
+        <span class="model-tag">yolox_l.onnx</span>
+        <span class="model-tag">dw-ll_ucoco_384.onnx</span>
+    </div>
+    <p>首次运行 DWPose 节点时会自动下载，存放于 <code>ComfyUI/models/onnx/</code></p>
+</div>
+
+<h2>🖼️ 姿态骨架参考图</h2>
+<div class="card">
+    <p>工作流需要 6 张纯骨架线条图（白底彩色线条），对应 6 个拍摄角度：</p>
+    <img src="pose_6.png" alt="六角度骨骼示意图" class="skeleton-guide">
+    <table>
+        <tr><th>文件名</th><th>角度</th><th>特征</th></tr>
+        <tr><td><code>front.png</code></td><td>正面</td><td>对称骨骼，面对镜头</td></tr>
+        <tr><td><code>back.png</code></td><td>背面</td><td>背对镜头，肩胛骨可见</td></tr>
+        <tr><td><code>left.png</code></td><td>左四分之三</td><td>身体左转45°，右肩更宽</td></tr>
+        <tr><td><code>right.png</code></td><td>右四分之三</td><td>身体右转45°，左肩更宽</td></tr>
+        <tr><td><code>side.png</code></td><td>纯侧面</td><td>身体90°侧转，双肩重叠</td></tr>
+        <tr><td><code>top.png</code></td><td>俯视</td><td>头顶视角，肩膀呈圆形</td></tr>
+    </table>
+    <div class="note">
+        <strong>💡 生成骨骼图的方法：</strong><br>
+        1. 使用 OpenPose Editor 插件手动绘制<br>
+        2. 使用 DWPose 从真实照片提取<br>
+        3. 使用 AI 生成（如 ControlNet 配合骨骼图）
+    </div>
+</div>
+
+<h2>⚙️ 工作流选择</h2>
+<div class="workflow-grid">
+    <div class="workflow-card workflow-pose">
+        <div><span class="badge badge-pose">姿势优先</span> <code>portrait_1.json</code></div>
+        <h3>🏃 portrait_1 - 姿势优先</h3>
+        <p>优先保证姿势准确性，身份相似度适中。<br>适用于：舞蹈动作、特定姿态、运动场景</p>
+        <table style="font-size: 13px;">
+            <tr><th>参数</th><th>值</th></tr>
+            <tr><td>ip_weight</td><td>1.1-1.3（低）</td></tr>
+            <tr><td>cn_strength</td><td>0.55-0.62（高）</td></tr>
+            <tr><td>denoise</td><td>0.82-0.85（高）</td></tr>
+            <tr><td>steps</td><td>30-32</td></tr>
+        </table>
+    </div>
+    
+    <div class="workflow-card workflow-face">
+        <div><span class="badge badge-face">面部优先</span> <code>portrait_2.json</code></div>
+        <h3>👤 portrait_2 - 面部优先</h3>
+        <p>优先保证身份相似度，姿势准确性略有下降。<br>适用于：产品图、证件照、角色一致性</p>
+        <table style="font-size: 13px;">
+            <tr><th>参数</th><th>值</th></tr>
+            <tr><td>ip_weight</td><td>1.3-1.45（高）</td></tr>
+            <tr><td>cn_strength</td><td>0.32-0.46（低）</td></tr>
+            <tr><td>denoise</td><td>0.68-0.78（中）</td></tr>
+            <tr><td>steps</td><td>28-30</td></tr>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h3>⚖️ 完美兼顾？—— 技术限制说明</h3>
+    <p><strong>目前的技术现状：</strong> 身份保持和姿态控制之间存在<strong>天然冲突</strong>。</p>
+    <ul>
+        <li>InstantID 的 face embedding 来自<strong>正面人脸</strong>，会自然地将人物往正面方向引导</li>
+        <li>强化姿态控制（提高 cn_strength）会稀释身份信号</li>
+        <li>强化身份保持（提高 ip_weight）会拉回正面姿态</li>
+    </ul>
+    <p><strong>无法完美兼顾的原因：</strong> 两种信号在 latent space 中相互竞争，目前没有模型能同时达到 100% 的身份保持 + 100% 的姿势准确。</p>
+    <div class="note warning">
+        <strong>🎯 最佳实践建议：</strong><br>
+        - 根据<strong>输出用途</strong>选择优先方向<br>
+        - 如需要两者都高，采用<strong>两阶段生成</strong>：先用姿势优先生成姿势，再用面部优先（或 IP-Adapter FaceID）进行人脸修复<br>
+        - 俯视角度（top）天生难以保持身份，建议单独处理
+    </div>
+</div>
+
+<h2>📋 输入要求</h2>
+<div class="card">
+    <table>
+        <tr><th width="150">身份参考图</th><td><code>face13.webp</code> 或其他文件名，需在 JSON 中对应修改</td></tr>
+        <tr><th>要求</th><td>正面、清晰、光照均匀、无遮挡的人脸</td></tr>
+        <tr><th>姿态骨架图</th><td>6 张 PNG 图片（front/back/left/right/side/top.png）</td></tr>
+        <tr><th>输出尺寸</th><td>832×1216（可调整，保持 2:3 比例）</td></tr>
+    </table>
+</div>
+
+<h2>🚀 快速开始</h2>
+<div class="card">
+    <ol>
+        <li>确保所有模型文件下载到正确位置</li>
+        <li>安装必需的 custom_nodes</li>
+        <li>准备身份参考图 <code>face13.webp</code> 和 6 张骨架图</li>
+        <li>在 ComfyUI 中加载 <code>portrait_1.json</code> 或 <code>portrait_2.json</code></li>
+        <li>调整身份参考图文件名（如不同）</li>
+        <li>点击 Queue Prompt 运行</li>
+    </ol>
+    <div class="note">
+        <strong>💡 提示：</strong> 首次运行 DWPose 节点会下载 ONNX 模型（约 200MB），请耐心等待。
+    </div>
+</div>
+
+<h2>🔧 参数调优指南</h2>
+<div class="card">
+    <table>
+        <tr><th>目标</th><th>调整参数</th><th>方向</th></tr>
+        <tr><td>提高身份相似度</td><td><code>ip_weight</code></td><td class="param-highlight">↑ 增大 (1.2 → 1.4)</td></tr>
+        <tr><td>提高姿态准确度</td><td><code>cn_strength</code></td><td class="param-highlight">↑ 增大 (0.4 → 0.6)</td></tr>
+        <tr><td>更多细节/改变</td><td><code>denoise</code></td><td class="param-highlight">↑ 增大 (0.7 → 0.85)</td></tr>
+        <tr><td>更贴近原图</td><td><code>denoise</code></td><td class="param-highlight">↓ 减小 (0.7 → 0.6)</td></tr>
+        <tr><td>更强的提示词约束</td><td><code>cfg</code></td><td class="param-highlight">↑ 增大 (5.0 → 6.0)</td></tr>
+        <tr><td>生成质量</td><td><code>steps</code></td><td class="param-highlight">↑ 增大 (25 → 35)</td></tr>
+    </table>
+</div>
+
+<div class="note">
+    <strong>📌 版本信息：</strong><br>
+    - 工作流版本: v1.0<br>
+    - 基于 ComfyUI + InstantID + SDXL<br>
+    - 定稿日期: 2026-01-15
+</div>
+
+</body>
+</html>

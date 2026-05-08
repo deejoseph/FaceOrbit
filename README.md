@@ -1,136 +1,181 @@
-# FaceOrbit - AI形象生成器
+# FaceOrbit - AI 人像生成系统
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+<div align="center">
 
-> 上传一张照片，AI 帮你生成多角度形象或多风格艺术照。开源、免费、本地运行。
+![版本](https://img.shields.io/badge/version-1.0-blue)
+![Python](https://img.shields.io/badge/python-3.10+-green)
+![ComfyUI](https://img.shields.io/badge/ComfyUI-aki-orange)
 
-## ✨ 功能特性
+一个基于 **ComfyUI + InstantID + SDXL** 的多角度人像生成系统
 
-### 📐 多角度生成（6个角度）
-| 模式 | 说明 | 输出 |
-|------|------|------|
-| **写真模式** | 真实感人像，保留原片质感 | 6张（正面/背面/侧面/四分之三/右前/顶视） |
-| **二次元模式** | 日系动漫风格，30+预设角色 | 6张（同上） |
+</div>
 
-### 🎨 多画风迁移（单张输出）
-| 模式 | 说明 | 输出 |
-|------|------|------|
-| **真实感画风** | 摄影/电影质感，10种预设画风 | 1张 |
-| **2.5D画风** | 赛博朋克/水彩/魔法，10种预设画风 | 1张 |
+---
 
-### 🚀 核心能力
-- **InstantID 集成**：保留你的面部特征，实现身份迁移
-- **双模式设计**：体验模式（预设画风）+ 高级模式（自定义参数）
-- **模板管理**：保存/加载参数组合，一键复用
-- **自动拼图**：多角度模式自动合成6格拼图
-- **内置操作指南**：完整的参数与提示词中文说明
+## 📸 功能特点
+
+### 写真模式 (Portrait Mode)
+- **6 个角度**：正面、背面、左四分之三、右四分之三、侧面、顶视
+- **两种生成侧重**：
+  - 👤 面部优先：保证人物脸部相似度，适用于产品图、证件照
+  - 🏃 姿势优先：保证姿态准确性，适用于舞蹈动作、运动场景
+- **姿势骨架控制**：通过纯骨架线条图控制生成姿态
+- **模板管理**：保存/加载参数配置
+
+### 二次元动漫模式 (Anime Mode)
+- **日系动漫风格**：基于 Animagine XL 3.1
+- **预设角色库**：100+ 热门动漫角色（火影、海贼、原神等）
+- **即选即用**：一键体验预设角色
+- **详细操作指南**：提示词规范、参数调优、完整示例
+
+---
 
 ## 🖼️ 效果展示
 
-### 多角度模式 - 6个角度生成
-| 正面 | 背面 | 侧面 | 四分之三 | 右前 | 顶视 |
-|------|------|------|----------|------|------|
-| ![front](docs/images/front_sample.jpg) | ![back](docs/images/back_sample.jpg) | ![side](docs/images/side_sample.jpg) | ![threequarter](docs/images/threequarter_sample.jpg) | ![rightfront](docs/images/rightfront_sample.jpg) | ![top](docs/images/top_sample.jpg) |
+| 正面 | 背面 | 左四分之三 | 右四分之三 | 侧面 | 顶视 |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| 待添加 | 待添加 | 待添加 | 待添加 | 待添加 | 待添加 |
 
-### 多画风模式 - 画风迁移
-| 赛博朋克 | 水彩 | 魔法 | 电影质感 |
-|----------|------|------|----------|
-| ![cyberpunk](docs/images/cyberpunk_sample.jpg) | ![watercolor](docs/images/watercolor_sample.jpg) | ![magic](docs/images/magic_sample.jpg) | ![cinema](docs/images/cinema_sample.jpg) |
+> 💡 生成效果取决于上传照片质量和参数设置
+
+---
+
+## 📁 项目结构
+FaceOrbit/
+├── portrait.py # 写真模式主程序
+├── anime.py # 二次元动漫模式主程序
+├── guide_content.py # 动漫模式操作指南
+├── character_presets.py # 动漫角色预设库
+├── workflows/
+│ ├── portrait_1.json # 写真模式 - 姿势优先工作流
+│ ├── portrait_2.json # 写真模式 - 面部优先工作流
+│ └── anime_6angles.json # 动漫模式工作流
+├── user_templates_portrait/ # 写真模式用户模板
+├── user_templates_anime/ # 动漫模式用户模板
+├── temp/ # 临时文件
+├── output/ # 输出目录
+│ └── jobs/ # 按任务分组保存
+└── README.md
+
+text
+
+---
 
 ## 🚀 快速开始
 
 ### 环境要求
 
-- Python 3.10+
-- ComfyUI（已安装 InstantID 插件）
-- 8GB+ 显存 GPU（推荐）
+- **Python 3.10+**
+- **ComfyUI** (已安装 InstantID、ControlNet、IP-Adapter 等插件)
+- **必要模型**（放入 ComfyUI 对应目录）：
+
+| 模型 | 存放路径 | 说明 |
+|:---|:---|:---|
+| `RealVisXL_V5.0_fp16.safetensors` | `models/checkpoints/` | 写真实感模型 |
+| `animagine-xl-3.1.safetensors` | `models/checkpoints/` | 二次元动漫模型 |
+| `sdxl_vae.safetensors` | `models/vae/` | SDXL VAE |
+| `ip-adapter.bin` | `models/instantid/` | InstantID 模型 |
+| `diffusion_pytorch_model.safetensors` | `models/controlnet/` | InstantID ControlNet |
+| `OpenPoseXL2.safetensors` | `models/controlnet/` | OpenPose ControlNet |
 
 ### 安装
 
+1. **克隆项目**
 ```bash
-git clone https://github.com/deejoseph/FaceOrbit.git
+git clone https://github.com/yourname/FaceOrbit.git
 cd FaceOrbit
-pip install gradio requests pillow
-运行
+安装依赖
+
 bash
-# 启动启动器（推荐）
-python launcher.py
+pip install gradio pillow requests
+修改 ComfyUI 路径
+编辑 portrait.py 和 anime.py 中的：
 
-# 或直接启动任意模式
-python portrait.py    # 写真模式 :7861
-python anime.py       # 二次元模式:7862
-python realistic.py   # 真实感画风:7864
-python scifi.py       # 2.5D画风:7865
-浏览器将自动打开 http://127.0.0.1:7860
+python
+COMFYUI_INPUT_DIR = "你的 ComfyUI 安装路径/input"
+COMFYUI_API = "http://127.0.0.1:8188"
+运行
+写真模式（端口 7861）：
 
-📁 项目结构
-text
-FaceOrbit/
-├── launcher.py                 # 启动器（四模式入口）
-├── portrait.py                 # 写真模式（多角度）
-├── anime.py                    # 二次元模式（多角度）
-├── realistic.py                # 真实感画风（多画风）
-├── scifi.py                    # 2.5D画风（多画风）
-├── guide_content.py            # 操作指南（共用）
-├── character_presets.py        # 预设角色库
-├── workflows/
-│   ├── portrait_6angles.json
-│   ├── anime_6angles.json
-│   ├── realistic_style.json
-│   └── scifi_style.json
-├── temp/                       # 临时文件
-└── output/                     # 生成图片输出
-    └── jobs/                   # 按时间归档
-🎮 预设画风（10种）
-真实感画风模式
-画风	描述
-霓虹灯的夜晚	都市氛围，光影交错
-职场女精英	干练优雅，自然光
-赛博女战士	科幻装甲，红色元素
-城市的傍晚	夕阳余晖下的女性
-狼灵少女	神秘气质，野性之美
-地下城幻境	发光蘑菇下的探险者
-路边的咖啡屋	时尚街拍，电影质感
-哥特美学	暗黑优雅，艺术感人像
-窗边	赛博公寓，雨夜霓虹
-家居	古典奢华，静谧午后
-2.5D画风模式
-画风	描述
-经典镜头-仿攻壳机动队	机械义体，赛博朋克
-水彩少女	清新淡雅，色彩柔和
-义体改造	科技感十足
-冬日暖阳	温馨氛围
-春天花会开	浪漫唯美
-一家老的CD店	文艺气息
-旗袍夜色	东方韵味
-魔法师	奇幻色彩
-弹吉他	动感活力
-水彩重金属	独特混搭
+bash
+python portrait.py
+二次元动漫模式（端口 7862）：
+
+bash
+python anime.py
+准备姿态骨架图（写真模式）
+在项目目录下放置 6 张纯骨架线条图（白底彩色线条）：
+
+文件名	角度	特征
+front.png	正面	对称骨骼，面对镜头
+back.png	背面	背对镜头，肩胛骨可见
+left.png	左四分之三	身体左转 45°，右肩更宽
+right.png	右四分之三	身体右转 45°，左肩更宽
+side.png	纯侧面	身体 90° 侧转，双肩重叠
+top.png	俯视	头顶视角，肩膀呈圆形
 ⚙️ 参数说明
-多角度模式推荐参数
-参数	写真模式	二次元模式
-相似度	0.92	0.8
-姿态控制	0.5	0.35
-创意度	0.73	0.7
-提示词引导	3.0	6.5
-采样步数	30	28
-多画风模式推荐参数
-参数	真实感画风	2.5D画风
-相似度	0.92	0.85
-姿态控制	0.5	0.45
-创意度	0.73	0.6
-提示词引导	3.0	6.5
-采样步数	30	28
+写真模式
+参数	范围	默认值	说明
+相似度	0.5-1.5	1.15	越高越像上传照片
+姿态控制	0.0-0.8	0.45	越高越遵循姿态参考
+创意度	0.4-0.9	0.72	越高变化越大
+提示词引导	4.0-8.0	5.5	越高越遵循提示词
+采样步数	20-50	30	越高质量越好
+色彩校正	0.0-1.0	0.5	颜色饱和度调整
+动漫模式
+参数	范围	默认值	说明
+相似度	0.5-1.0	0.8	越高越像上传照片
+姿态控制	0.0-0.8	0.35	越高越遵循姿态参考
+创意度	0.5-0.9	0.7	越高变化越大
+提示词引导	1.0-10.0	6.5	越高越遵循提示词
+采样步数	20-50	28	越高质量越好
+色彩校正	0.0-1.0	0.65	颜色饱和度调整
+🎯 参数调优指南
+目标	参数调整
+更像上传照片	↑ 相似度，↓ 创意度
+姿态更准确	↑ 姿态控制
+变化更大/更自由	↓ 相似度，↑ 创意度
+更贴合提示词	↑ 提示词引导
+提高画质	↑ 采样步数
+复现结果	勾选「固定种子」
+📝 提示词语法（动漫模式）
+使用 Danbooru 风格标签，顺序建议：
+
+text
+质量, 数量, 角色名, 作品, 服装, 动作, 表情, 背景, 年代
+示例：
+
+text
+masterpiece, best quality, very aesthetic, 1girl, Hatsune Miku, vocaloid, long turquoise hair, school uniform, standing, singing, night concert, newest
+❓ 常见问题
+Q: 生成失败，提示无法连接 ComfyUI？
+A: 确保 ComfyUI 已启动并添加 --listen 参数
+
+Q: 照片上传后没有反应？
+A: 检查照片格式（jpg/png/webp）和大小
+
+Q: 人物不像本人？
+A: 提高「相似度」参数，或更换更清晰的照片
+
+Q: 动漫模式效果不好？
+A: 确保使用的是 Animagine XL 3.1 模型，提示词使用 Danbooru 标签格式
+
+Q: 背面/侧面姿势不对？
+A: 检查骨架图是否正确，或提高「姿态控制」参数
+
 📄 许可证
-MIT
+MIT License
 
 🙏 致谢
 ComfyUI
 
 InstantID
 
-Animagine XL 3.1
+Animagine XL
 
 RealVisXL
 
-GhostXL
+📞 联系方式
+如有问题或建议，欢迎提交 Issue
+
+*最后更新：2026-01-15*

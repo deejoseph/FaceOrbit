@@ -1,0 +1,399 @@
+{
+  "1": {
+    "inputs": {"ckpt_name": "RealVisXL_V5.0_fp16.safetensors"},
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {"title": "模型加载"}
+  },
+  "3": {
+    "inputs": {"image": "身份.jpg"},
+    "class_type": "LoadImage",
+    "_meta": {"title": "身份参考图（面部）"}
+  },
+  "4_front": {
+    "inputs": {"image": "front.jpg"},
+    "class_type": "LoadImage",
+    "_meta": {"title": "姿态参考-正面"}
+  },
+  "4_back": {
+    "inputs": {"image": "back.jpg"},
+    "class_type": "LoadImage",
+    "_meta": {"title": "姿态参考-背面"}
+  },
+  "4_left": {
+    "inputs": {"image": "left.jpg"},
+    "class_type": "LoadImage",
+    "_meta": {"title": "姿态参考-左四分之三"}
+  },
+  "4_right": {
+    "inputs": {"image": "right.jpg"},
+    "class_type": "LoadImage",
+    "_meta": {"title": "姿态参考-右四分之三"}
+  },
+  "4_side": {
+    "inputs": {"image": "side.jpg"},
+    "class_type": "LoadImage",
+    "_meta": {"title": "姿态参考-侧面"}
+  },
+  "4_top": {
+    "inputs": {"image": "top.jpg"},
+    "class_type": "LoadImage",
+    "_meta": {"title": "姿态参考-顶视"}
+  },
+  "5": {
+    "inputs": {"instantid_file": "ip-adapter.bin"},
+    "class_type": "InstantIDModelLoader",
+    "_meta": {"title": "InstantID模型"}
+  },
+  "6": {
+    "inputs": {"provider": "CUDA"},
+    "class_type": "InstantIDFaceAnalysis",
+    "_meta": {"title": "人脸分析"}
+  },
+  "7": {
+    "inputs": {"control_net_name": "diffusion_pytorch_model.safetensors"},
+    "class_type": "ControlNetLoader",
+    "_meta": {"title": "ControlNet"}
+  },
+  "8": {
+    "inputs": {
+      "text": "worst quality, low quality, normal quality, lowres, jpeg artifacts, blurry, noisy, soft focus, distorted, deformed, ugly, bad anatomy, bad hands, asymmetrical face, out of frame, cropped head, two heads, double head, multiple faces, extra head, clone, multiple people, watermark, text, signature, illustration, 3d, 2d, painting, cartoon, sketch, dark, underexposed, low contrast, gray skin, dull color, muddy colors, flat lighting, haze, foggy, washed out",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "负向提示词"}
+  },
+  "9": {
+    "inputs": {"vae_name": "sdxl_vae.safetensors"},
+    "class_type": "VAELoader",
+    "_meta": {"title": "VAE加载器"}
+  },
+  "10": {
+    "inputs": {"pixels": ["3", 0], "vae": ["9", 0]},
+    "class_type": "VAEEncode",
+    "_meta": {"title": "编码身份图"}
+  },
+  "prompt_front": {
+    "inputs": {
+      "text": "high quality realistic full body studio portrait photo, front view, facing camera, standing upright, both eyes visible, natural skin texture, bright soft studio lighting, clean white background, balanced exposure, clear contrast, natural skin tone, sharp focus, high resolution",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "提示词-正面"}
+  },
+  "prompt_back": {
+    "inputs": {
+      "text": "high quality realistic full body studio portrait photo, back view, facing away from camera, back of head visible, no face visible, standing upright, bright soft studio lighting, clean white background, balanced exposure, clear contrast, realistic color, sharp focus, high resolution",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "提示词-背面"}
+  },
+  "prompt_left": {
+    "inputs": {
+      "text": "high quality realistic full body studio portrait photo, three quarter left side view, body turned 45 degrees left, face slightly turned left, both eyes visible, natural skin texture, bright soft studio lighting, clean white background, balanced exposure, clear contrast, natural skin tone, sharp focus, high resolution",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "提示词-左四分之三"}
+  },
+  "prompt_right": {
+    "inputs": {
+      "text": "high quality realistic full body studio portrait photo, three quarter right side view, body turned 45 degrees right, face slightly turned right, both eyes visible, natural skin texture, bright soft studio lighting, clean white background, balanced exposure, clear contrast, natural skin tone, sharp focus, high resolution",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "提示词-右四分之三"}
+  },
+  "prompt_side": {
+    "inputs": {
+      "text": "high quality realistic full body studio portrait photo, strict side view, body turned 90 degrees left, face looking left, one eye visible, nose profile visible, ear visible, standing upright, bright soft studio lighting, clean white background, balanced exposure, clear contrast, natural skin tone, sharp focus, high resolution",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "提示词-侧面"}
+  },
+  "prompt_top": {
+    "inputs": {
+      "text": "high quality realistic portrait photo, top down view, camera above the person, looking slightly upward, visible head and shoulders from above, bright soft studio lighting, clean white background, balanced exposure, clear contrast, natural skin tone, sharp focus, high resolution",
+      "clip": ["1", 1]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "提示词-顶视"}
+  },
+  "instantid_front": {
+    "inputs": {
+      "ip_weight": 0.85,
+      "cn_strength": 0.55,
+      "start_at": 0,
+      "end_at": 0.78,
+      "noise": 0,
+      "combine_embeds": "average",
+      "instantid": ["5", 0],
+      "insightface": ["6", 0],
+      "control_net": ["7", 0],
+      "image": ["3", 0],
+      "image_kps": ["4_front", 0],
+      "model": ["1", 0],
+      "positive": ["prompt_front", 0],
+      "negative": ["8", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {"title": "InstantID-正面"}
+  },
+  "instantid_back": {
+    "inputs": {
+      "ip_weight": 0.7,
+      "cn_strength": 0.5,
+      "start_at": 0,
+      "end_at": 0.6,
+      "noise": 0.05,
+      "combine_embeds": "average",
+      "instantid": ["5", 0],
+      "insightface": ["6", 0],
+      "control_net": ["7", 0],
+      "image": ["3", 0],
+      "image_kps": ["4_back", 0],
+      "model": ["1", 0],
+      "positive": ["prompt_back", 0],
+      "negative": ["8", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {"title": "InstantID-背面"}
+  },
+  "instantid_left": {
+    "inputs": {
+      "ip_weight": 0.75,
+      "cn_strength": 0.6,
+      "start_at": 0,
+      "end_at": 0.72,
+      "noise": 0,
+      "combine_embeds": "average",
+      "instantid": ["5", 0],
+      "insightface": ["6", 0],
+      "control_net": ["7", 0],
+      "image": ["3", 0],
+      "image_kps": ["4_left", 0],
+      "model": ["1", 0],
+      "positive": ["prompt_left", 0],
+      "negative": ["8", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {"title": "InstantID-左四分之三"}
+  },
+  "instantid_right": {
+    "inputs": {
+      "ip_weight": 0.75,
+      "cn_strength": 0.6,
+      "start_at": 0,
+      "end_at": 0.72,
+      "noise": 0,
+      "combine_embeds": "average",
+      "instantid": ["5", 0],
+      "insightface": ["6", 0],
+      "control_net": ["7", 0],
+      "image": ["3", 0],
+      "image_kps": ["4_right", 0],
+      "model": ["1", 0],
+      "positive": ["prompt_right", 0],
+      "negative": ["8", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {"title": "InstantID-右四分之三"}
+  },
+  "instantid_side": {
+    "inputs": {
+      "ip_weight": 0.6,
+      "cn_strength": 0.7,
+      "start_at": 0,
+      "end_at": 0.7,
+      "noise": 0.02,
+      "combine_embeds": "average",
+      "instantid": ["5", 0],
+      "insightface": ["6", 0],
+      "control_net": ["7", 0],
+      "image": ["3", 0],
+      "image_kps": ["4_side", 0],
+      "model": ["1", 0],
+      "positive": ["prompt_side", 0],
+      "negative": ["8", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {"title": "InstantID-侧面"}
+  },
+  "instantid_top": {
+    "inputs": {
+      "ip_weight": 0.75,
+      "cn_strength": 0.5,
+      "start_at": 0,
+      "end_at": 0.65,
+      "noise": 0.03,
+      "combine_embeds": "average",
+      "instantid": ["5", 0],
+      "insightface": ["6", 0],
+      "control_net": ["7", 0],
+      "image": ["3", 0],
+      "image_kps": ["4_top", 0],
+      "model": ["1", 0],
+      "positive": ["prompt_top", 0],
+      "negative": ["8", 0]
+    },
+    "class_type": "ApplyInstantIDAdvanced",
+    "_meta": {"title": "InstantID-顶视"}
+  },
+  "sampler_front": {
+    "inputs": {
+      "seed": 42,
+      "steps": 30,
+      "cfg": 6,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.75,
+      "model": ["instantid_front", 0],
+      "positive": ["instantid_front", 1],
+      "negative": ["instantid_front", 2],
+      "latent_image": ["10", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "采样器-正面"}
+  },
+  "sampler_back": {
+    "inputs": {
+      "seed": 43,
+      "steps": 34,
+      "cfg": 6,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.78,
+      "model": ["instantid_back", 0],
+      "positive": ["instantid_back", 1],
+      "negative": ["instantid_back", 2],
+      "latent_image": ["10", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "采样器-背面"}
+  },
+  "sampler_left": {
+    "inputs": {
+      "seed": 44,
+      "steps": 32,
+      "cfg": 6,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.74,
+      "model": ["instantid_left", 0],
+      "positive": ["instantid_left", 1],
+      "negative": ["instantid_left", 2],
+      "latent_image": ["10", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "采样器-左四分之三"}
+  },
+  "sampler_right": {
+    "inputs": {
+      "seed": 45,
+      "steps": 32,
+      "cfg": 6,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.74,
+      "model": ["instantid_right", 0],
+      "positive": ["instantid_right", 1],
+      "negative": ["instantid_right", 2],
+      "latent_image": ["10", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "采样器-右四分之三"}
+  },
+  "sampler_side": {
+    "inputs": {
+      "seed": 46,
+      "steps": 35,
+      "cfg": 6,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.76,
+      "model": ["instantid_side", 0],
+      "positive": ["instantid_side", 1],
+      "negative": ["instantid_side", 2],
+      "latent_image": ["10", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "采样器-侧面"}
+  },
+  "sampler_top": {
+    "inputs": {
+      "seed": 47,
+      "steps": 34,
+      "cfg": 6,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 0.72,
+      "model": ["instantid_top", 0],
+      "positive": ["instantid_top", 1],
+      "negative": ["instantid_top", 2],
+      "latent_image": ["10", 0]
+    },
+    "class_type": "KSampler",
+    "_meta": {"title": "采样器-顶视"}
+  },
+  "decode_front": {
+    "inputs": {"samples": ["sampler_front", 0], "vae": ["9", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "VAE解码-正面"}
+  },
+  "decode_back": {
+    "inputs": {"samples": ["sampler_back", 0], "vae": ["9", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "VAE解码-背面"}
+  },
+  "decode_left": {
+    "inputs": {"samples": ["sampler_left", 0], "vae": ["9", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "VAE解码-左四分之三"}
+  },
+  "decode_right": {
+    "inputs": {"samples": ["sampler_right", 0], "vae": ["9", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "VAE解码-右四分之三"}
+  },
+  "decode_side": {
+    "inputs": {"samples": ["sampler_side", 0], "vae": ["9", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "VAE解码-侧面"}
+  },
+  "decode_top": {
+    "inputs": {"samples": ["sampler_top", 0], "vae": ["9", 0]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "VAE解码-顶视"}
+  },
+  "save_front": {
+    "inputs": {"filename_prefix": "portrait_front", "images": ["decode_front", 0]},
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存-正面"}
+  },
+  "save_back": {
+    "inputs": {"filename_prefix": "portrait_back", "images": ["decode_back", 0]},
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存-背面"}
+  },
+  "save_left": {
+    "inputs": {"filename_prefix": "portrait_left", "images": ["decode_left", 0]},
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存-左四分之三"}
+  },
+  "save_right": {
+    "inputs": {"filename_prefix": "portrait_right", "images": ["decode_right", 0]},
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存-右四分之三"}
+  },
+  "save_side": {
+    "inputs": {"filename_prefix": "portrait_side", "images": ["decode_side", 0]},
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存-侧面"}
+  },
+  "save_top": {
+    "inputs": {"filename_prefix": "portrait_top", "images": ["decode_top", 0]},
+    "class_type": "SaveImage",
+    "_meta": {"title": "保存-顶视"}
+  }
+}
