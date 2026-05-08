@@ -32,11 +32,14 @@
 
 ## 🖼️ 效果展示
 
-| 正面 | 背面 | 左四分之三 | 右四分之三 | 侧面 | 顶视 |
-|:---:|:---:|:---:|:---:|:---:|:---:|
-| 待添加 | 待添加 | 待添加 | 待添加 | 待添加 | 待添加 |
+| 风格 | 示例图 |
+|:---|:---:|
+| 赛博女战士 | ![cyberpunk](赛博女战士cyberpunk_sample.png) |
+| 水彩风格 | ![watercolor](水彩watercolor_sample.png) |
+| 旗袍风格 | ![qipao](旗袍qipao_sample.png) |
+| 电影质感 | ![cinema](电影质感cinema_sample.png) |
 
-> 💡 生成效果取决于上传照片质量和参数设置
+> 💡 以上为示例效果，实际生成效果取决于上传照片质量和参数设置
 
 ---
 
@@ -55,6 +58,16 @@ FaceOrbit/
 ├── temp/ # 临时文件
 ├── output/ # 输出目录
 │ └── jobs/ # 按任务分组保存
+├── front.png # 姿态骨架图 - 正面
+├── back.png # 姿态骨架图 - 背面
+├── left.png # 姿态骨架图 - 左四分之三
+├── right.png # 姿态骨架图 - 右四分之三
+├── side.png # 姿态骨架图 - 侧面
+├── top.png # 姿态骨架图 - 顶视
+├── 赛博女战士cyberpunk_sample.png # 示例图片
+├── 水彩watercolor_sample.png # 示例图片
+├── 旗袍qipao_sample.png # 示例图片
+├── 电影质感cinema_sample.png # 示例图片
 └── README.md
 
 text
@@ -66,7 +79,7 @@ text
 ### 环境要求
 
 - **Python 3.10+**
-- **ComfyUI** (已安装 InstantID、ControlNet、IP-Adapter 等插件)
+- **ComfyUI**（已安装 InstantID、ControlNet、IP-Adapter 等插件）
 - **必要模型**（放入 ComfyUI 对应目录）：
 
 | 模型 | 存放路径 | 说明 |
@@ -104,7 +117,7 @@ python portrait.py
 bash
 python anime.py
 准备姿态骨架图（写真模式）
-在项目目录下放置 6 张纯骨架线条图（白底彩色线条）：
+在项目根目录下放置以下 6 张纯骨架线条图（白底彩色线条）：
 
 文件名	角度	特征
 front.png	正面	对称骨骼，面对镜头
@@ -174,8 +187,5 @@ InstantID
 Animagine XL
 
 RealVisXL
-
-📞 联系方式
-如有问题或建议，欢迎提交 Issue
 
 *最后更新：2026-01-15*
